@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NeverSettle | Recruiter Training v2.5</title>
+<title>NeverSettle | Recruiter Training v2.7</title>
 <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;600;700;900&family=Barlow+Condensed:wght@700;900&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -61,7 +61,12 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--w
 .bar{height:3px;background:var(--surface2);border-radius:2px;margin-top:8px;overflow:hidden}
 .fill{height:100%;background:var(--green);border-radius:2px;transition:width .4s}
 .fill.warn{background:var(--amber)}.fill.bad{background:var(--red)}.fill.good{background:var(--green)}
-.script-card{flex-shrink:0;display:none;margin:0 22px 8px;background:var(--amber-dim);border:1px solid rgba(239,159,39,.3);border-radius:10px;padding:11px 14px}
+.script-card{flex-shrink:0;display:none;margin:0 22px 8px;background:var(--amber-dim);border:1px solid rgba(239,159,39,.3);border-radius:10px;padding:11px 14px;transition:all .3s}
+.script-card.gated{background:rgba(192,57,43,.18);border-color:var(--red);animation:scriptPulse 1.4s ease-in-out infinite}
+.script-card.gated .sc-lbl{color:#e05a4a}
+.script-card.hint{background:rgba(0,200,150,.12);border-color:var(--green);animation:none}
+.script-card.hint .sc-lbl{color:var(--green)}
+@keyframes scriptPulse{0%,100%{box-shadow:0 0 0 0 rgba(192,57,43,.45);border-color:var(--red)}50%{box-shadow:0 0 0 6px rgba(192,57,43,0);border-color:#e05a4a}}
 .sc-lbl{font-size:10px;font-weight:600;color:var(--amber);text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px}
 .sc-txt{font-size:13px;color:#fff;font-style:italic;line-height:1.6}
 .sc-sub{font-size:11px;color:var(--gray);margin-top:4px}
@@ -98,7 +103,7 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--w
         <div class="logo-icon"><svg viewBox="0 0 16 16"><path d="M8 1L1 5v6l7 4 7-4V5L8 1zm0 2.2L13 6v4l-5 2.8L3 10V6l5-2.8z"/></svg></div>
         <h1>NeverSettle</h1>
       </div>
-      <div class="logo-v">v2.5 &middot; Recruiter Training</div>
+      <div class="logo-v">v2.7 &middot; Recruiter Training</div>
     </div>
     <div class="sec">Candidate archetypes</div>
     <button class="pbtn" id="p-skeptic">
@@ -290,6 +295,9 @@ var messages=[],whyScores=[],depthScores=[],violationCount=0;
 var isRecording=false,isSpeaking=false,recog=null;
 var objectives={obj1:false,obj2:false,obj3:false,obj4:false};
 var openingAnswered=false;
+// Strict gating state: tracks miss count per gated turn (1 and 3)
+var scriptMisses={1:0,3:0};
+var gatedTurn=null; // current turn we're stuck on, or null if free
 
 function $id(id){return document.getElementById(id)}
 
@@ -341,10 +349,13 @@ function updateObjectives(flags){
 
 function updateScriptCard(){
   if(!persona){$id('scriptCard').style.display='none';return}
-  var turn=Math.floor(messages.length/2)+1;
+  // If gated, hold the script card on the gated turn (don't advance).
+  var turn=gatedTurn||(Math.floor(messages.length/2)+1);
   var fn=persona.name.split(' ')[0];
   var src=SOURCE_SCRIPT[sourceKey];
   var card=$id('scriptCard'),txt=$id('scriptTxt'),sub=$id('scriptSub');
+  // Reset visual state
+  card.classList.remove('gated','hint');
   if(turn===1){
     card.style.display='block';
     txt.textContent='"Hello, may I speak with '+fn+'?"';
@@ -360,12 +371,25 @@ function updateScriptCard(){
   } else {
     card.style.display='none';
   }
+  // Apply gated/hint visual treatment
+  if(gatedTurn){
+    var misses=scriptMisses[gatedTurn]||0;
+    if(misses>=4){
+      card.classList.add('hint');
+      sub.textContent='HINT — say something close to: '+txt.textContent;
+    } else if(misses>=1){
+      card.classList.add('gated');
+      sub.textContent=sub.textContent+'  (attempt '+(misses+1)+' — candidate is waiting for the script)';
+    }
+  }
 }
 
 function reset(){
   messages=[];whyScores=[];depthScores=[];violationCount=0;
   objectives={obj1:false,obj2:false,obj3:false,obj4:false};
   openingAnswered=false;
+  scriptMisses={1:0,3:0};
+  gatedTurn=null;
   $id('chat').innerHTML='<div class="msg s">Session reset — press the mic when ready</div>';
   ['mT','mD','mW','mV'].forEach(function(id){$id(id).textContent=(id==='mT'||id==='mV')?'0':'--'});
   ['mTb','mDb','mWb','mVb'].forEach(function(id){$id(id).style.width='0'});
@@ -449,23 +473,32 @@ $id('micBtn').addEventListener('click',function(){
 });
 
 async function callClaude(text){
-  var turn=Math.floor(messages.length/2)+1;
+  // If we're gated, the "current turn" is the one we're stuck on, not history-derived.
+  var turn=gatedTurn||(Math.floor(messages.length/2)+1);
   var src=SOURCES[sourceKey];
   var srcScript=SOURCE_SCRIPT[sourceKey];
+  var fn=persona.name.split(' ')[0];
   var history=messages.map(function(m){return(m.r?'RECRUITER':'CANDIDATE')+': '+m.t}).join('\n');
 
+  // GATED TURNS: 1 (ask for candidate by name) and 3 (ask how search is going).
+  // Turn 2 advances even on partial completion (yellow flag, not gate).
   var scriptCtx='';
-  if(turn===1)scriptCtx='SCRIPTED TURN 1: Score whether recruiter asked for candidate by name. Lenient.\n\n';
-  else if(turn===2)scriptCtx='SCRIPTED TURN 2: Score whether recruiter said their name, Momentum Solar, referenced source ('+srcScript+'), asked if in market. Lenient.\n\n';
-  else if(turn===3)scriptCtx='TURN 3: Did recruiter ask how search is going or similar? Candidate answers ONCE. Do not repeat.\n\n';
+  if(turn===1){
+    scriptCtx='SCRIPTED TURN 1 (GATED). Required intent: recruiter asks for the candidate by name (e.g. "Hello may I speak to '+fn+'?", "Is this '+fn+'?", "Hi, looking for '+fn+'"). LENIENT MATCHING: any phrasing that clearly asks for the candidate by name passes — they do not need exact wording. If recruiter does NOT ask for candidate by name, set SCRIPT_INTENT_HIT: false and SCRIPT_GATED: true. As the candidate, do NOT identify yourself or volunteer information. Say something like "Who is this?" or "You called me — who are you trying to reach?" and stop. Stay closed.\n\n';
+  } else if(turn===2){
+    scriptCtx='SCRIPTED TURN 2 (PARTIAL PASS). Required intents (4): (a) recruiter gives their own name, (b) says they\'re from Momentum Solar, (c) references the source ('+srcScript+'), (d) asks if candidate is in the market / looking for opportunity. LENIENT MATCHING. If 3+ of 4 hit, score green. If 1-2 of 4 hit, score yellow with COACH_BODY noting which were missed. SCRIPT_INTENT_HIT: true if at least 1 of 4 hit. SCRIPT_GATED: false (always advance from turn 2). Candidate response: "Good, thanks. What is this about?" or similar — surface, not yet open.\n\n';
+  } else if(turn===3){
+    scriptCtx='SCRIPTED TURN 3 (GATED). Required intent: recruiter asks an OPEN-ENDED question about the candidate\'s search/career hunt — e.g. "How\'s your search been going?", "Where are you at in your search?", "What brought you to looking around?", "How\'s the hunt going?". LENIENT MATCHING: any open-ended question about their search/career-seeking process passes. DOES NOT PASS: pitching the role, asking about experience, asking what they want to do, jumping to comp, asking logistical questions. If recruiter does NOT ask an open-ended search question, set SCRIPT_INTENT_HIT: false and SCRIPT_GATED: true. As the candidate, do NOT volunteer ceiling/family/identity/emotion information. Stay surface and curious — say something like "About what?" or "What did you want to talk about?" or "Pretty good. What\'s this regarding?". Push the recruiter to ask the script question. If SCRIPT_INTENT_HIT is true, then the candidate opens up per their archetype (skeptic = ceiling/exploring, changer = injury/family, hungry = vague-but-pulled-open).\n\n';
+  }
 
   var openNote=(turn>3&&!openingAnswered)?'NOTE: Candidate already answered how search is going in turn 3. Do not volunteer again unless directly asked.\n\n':'';
 
+  // Add the SCRIPT_INTENT_HIT and SCRIPT_GATED fields to the structured output.
   var coachInstr=turn<=2
-    ?'COACH_LABEL: SCRIPT CHECK | COACH_BODY: Score whether recruiter hit the intent. Lenient. | RED: false | WHY: 50 | DEPTH: 0 | YOUVIOL: false | COMPVIOL: false | OBJ1: false | OBJ2: false | OBJ3: false | OBJ4: false'
-    :'COACH_LABEL: [2-4 WORD CAPS] | COACH_BODY: [1-2 sentences describing what recruiter just did, backward coaching only, no you should] | RED: [true/false] | WHY: [0-100] | DEPTH: [0-5] | YOUVIOL: [true if recruiter said you would you seem you should you are addressing candidate] | COMPVIOL: [true if recruiter mentioned comp income earnings money before candidate brought it up] | OBJ1: [true if emotion word surfaced AND recruiter mirrored it] | OBJ2: [true if recruiter completed BOTH what-does-it-mean AND why-does-it-matter] | OBJ3: [true if recruiter used it seems like OR it sounds like OR it feels like] | OBJ4: [true if recruiter challenged candidate to validate with real example AND candidate gave one] SCORING: WHY 85-100=mirrored exact emotion word or asked what-does-it-mean or why-does-it-matter or used label language. WHY 70-84=strong discovery question stayed in WHY. WHY 50-69=decent question in discovery. WHY 30-49=slight drift toward role or logistics. WHY 10-29 RED=asked about hours schedule experience what candidate wants to DO not accomplish. WHY 0-15 RED=said JOB not career or mentioned comp unprompted or said you would be perfect or used unprofessional language like baby buttercup bro or gave away the role before any discovery. YOUVIOL deduct 15. COMPVIOL deduct 20. MIRROR RULE: 1-4 words repeated from candidate = GREAT MIRROR never GENERIC PRAISE. GENERIC PRAISE only fires on empty affirmations like great awesome wow with no reference to candidate words. CONTEXT RULE: If candidate asked about company or role recruiter may use Defer to Company - score as CLEAN DEFER not drift. ACCOMPLISH RULE: What are you looking to accomplish is correct methodology never flag as WHAT drift. QUALIFICATION RULE: Asking what steps candidate has taken toward their goal is a valid challenge move not WHAT drift. Only flag WHAT drift for job duties hours schedule experience unrelated to stated WHY. TRAP SETUP: sounds like you have given this thought or similar = TRAP SET green. IN-GROUP RULE: Complement requires third-person framing like those who are selected or candidates who do well here - never you are perfect or people like you - flag as GAVE IT AWAY if direct. SPEECH TOLERANCE: If phrase closely matches known methodology move score it as that move. RAPPORT BUILD: Do not fire this label. EMOTION WORD SURFACED: Note in COACH_BODY when candidate drops emotion word and two-step not yet used. LABELS GREEN: CLEAN SCRIPT|GREAT MIRROR|WHAT IT MEANS|WHY IT MATTERS|LABEL FIRED|TRAP SET|CHALLENGE LANDED|CLEAN DEFER|DISCOVERY WIN|DEPTH WIN|EMOTION SURFACED LABELS RED: WHAT DRIFT|WORD CHOICE: JOB|COMP TOO EARLY|YOU VIOLATION|GAVE IT AWAY|SURFACE PIVOT|GENERIC PRAISE|UNPROFESSIONAL'
+    ?'COACH_LABEL: SCRIPT CHECK | COACH_BODY: Score whether recruiter hit the intent. Lenient. | RED: false | WHY: 50 | DEPTH: 0 | YOUVIOL: false | COMPVIOL: false | OBJ1: false | OBJ2: false | OBJ3: false | OBJ4: false | SCRIPT_INTENT_HIT: [true if required intent for this turn was met, lenient] | SCRIPT_GATED: [true if turn 1 or 3 and intent missed, false otherwise]'
+    :'COACH_LABEL: [2-4 WORD CAPS] | COACH_BODY: [1-2 sentences describing what recruiter just did, backward coaching only, no you should] | RED: [true/false] | WHY: [0-100] | DEPTH: [0-5] | YOUVIOL: [true if recruiter said you would you seem you should you are addressing candidate] | COMPVIOL: [true if recruiter mentioned comp income earnings money before candidate brought it up] | OBJ1: [true if emotion word surfaced AND recruiter mirrored it] | OBJ2: [true if recruiter completed BOTH what-does-it-mean AND why-does-it-matter] | OBJ3: [true if recruiter used it seems like OR it sounds like OR it feels like] | OBJ4: [true if recruiter challenged candidate to validate with real example AND candidate gave one] | SCRIPT_INTENT_HIT: true | SCRIPT_GATED: false SCORING: WHY 85-100=mirrored exact emotion word or asked what-does-it-mean or why-does-it-matter or used label language. WHY 70-84=strong discovery question stayed in WHY. WHY 50-69=decent question in discovery. WHY 30-49=slight drift toward role or logistics. WHY 10-29 RED=asked about hours schedule experience what candidate wants to DO not accomplish. WHY 0-15 RED=said JOB not career or mentioned comp unprompted or said you would be perfect or used unprofessional language like baby buttercup bro or gave away the role before any discovery. YOUVIOL deduct 15. COMPVIOL deduct 20. MIRROR RULE: 1-4 words repeated from candidate = GREAT MIRROR never GENERIC PRAISE. GENERIC PRAISE only fires on empty affirmations like great awesome wow with no reference to candidate words. CONTEXT RULE: If candidate asked about company or role recruiter may use Defer to Company - score as CLEAN DEFER not drift. ACCOMPLISH RULE: What are you looking to accomplish is correct methodology never flag as WHAT drift. QUALIFICATION RULE: Asking what steps candidate has taken toward their goal is a valid challenge move not WHAT drift. Only flag WHAT drift for job duties hours schedule experience unrelated to stated WHY. TRAP SETUP: sounds like you have given this thought or similar = TRAP SET green. IN-GROUP RULE: Complement requires third-person framing like those who are selected or candidates who do well here - never you are perfect or people like you - flag as GAVE IT AWAY if direct. SPEECH TOLERANCE: If phrase closely matches known methodology move score it as that move. RAPPORT BUILD: Do not fire this label. EMOTION WORD SURFACED: Note in COACH_BODY when candidate drops emotion word and two-step not yet used. LABELS GREEN: CLEAN SCRIPT|GREAT MIRROR|WHAT IT MEANS|WHY IT MATTERS|LABEL FIRED|TRAP SET|CHALLENGE LANDED|CLEAN DEFER|DISCOVERY WIN|DEPTH WIN|EMOTION SURFACED LABELS RED: WHAT DRIFT|WORD CHOICE: JOB|COMP TOO EARLY|YOU VIOLATION|GAVE IT AWAY|SURFACE PIVOT|GENERIC PRAISE|UNPROFESSIONAL|SCRIPT MISS'
 
-  var prompt='You are '+persona.name+', a '+persona.role+' on a phone call with a Momentum Solar recruiter.\n\n'+persona.bio+'\n\nRecruiter found you because you '+src+'.\nThis is turn '+turn+'.\n\n'+scriptCtx+openNote+'RESPOND ONLY AS THE CANDIDATE. 1-3 sentences MAX. Answer only what was asked — one layer then stop. Natural tone.\n\n'+(history?'CONVERSATION:\n'+history+'\n\n':'')+'After your candidate response on a NEW LINE output EXACTLY (all one line):\n'+coachInstr+'\n\nRECRUITER JUST SAID: '+text;
+  var prompt='You are '+persona.name+', a '+persona.role+' on a phone call with a Momentum Solar recruiter.\n\n'+persona.bio+'\n\nRecruiter found you because you '+src+'.\nThis is turn '+turn+'.\n\n'+scriptCtx+openNote+'RESPOND ONLY AS THE CANDIDATE. 1-3 sentences MAX. Answer only what was asked — one layer then stop. Natural tone. Output dialogue ONLY — no stage directions, no asterisks, no parentheticals, no descriptions of tone or action. Do not write *pause* *sigh* *laughs* (softly) etc. Use ellipses (…) or short fragments to convey hesitation. The text will be read aloud verbatim to a recruiter trainee.\n\n'+(history?'CONVERSATION:\n'+history+'\n\n':'')+'After your candidate response on a NEW LINE output EXACTLY (all one line):\n'+coachInstr+'\n\nRECRUITER JUST SAID: '+text;
 
   var resp=await fetch(WORKER_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:prompt})});
   if(!resp.ok){var e=await resp.text();throw new Error(e||'API error '+resp.status)}
@@ -486,6 +519,8 @@ async function callClaude(text){
   var depth=parseInt(exf(coachLine,'DEPTH'))||0;
   var youViol=exb(coachLine,'YOUVIOL');
   var compViol=exb(coachLine,'COMPVIOL');
+  var scriptIntentHit=exb(coachLine,'SCRIPT_INTENT_HIT');
+  var scriptGated=exb(coachLine,'SCRIPT_GATED');
 
   if(youViol)violationCount++;
   if(compViol)violationCount++;
@@ -497,9 +532,9 @@ async function callClaude(text){
     obj4:exb(coachLine,'OBJ4')
   };
 
-  if(turn===3)openingAnswered=true;
+  if(turn===3&&scriptIntentHit)openingAnswered=true;
 
-  return{candidateReply:candidateReply||raw.split('\n')[0],label:label,body:body,isRed:isRed,why:why,depth:depth,objFlags:objFlags};
+  return{candidateReply:candidateReply||raw.split('\n')[0],label:label,body:body,isRed:isRed,why:why,depth:depth,objFlags:objFlags,scriptIntentHit:scriptIntentHit,scriptGated:scriptGated,turn:turn};
 }
 
 function startRecording(){
@@ -529,6 +564,44 @@ function startRecording(){
 
     try{
       var res=await callClaude(transcript);
+
+      // ── STRICT GATING: Turn 1 and Turn 3 require their script intent ──
+      var isGatedTurn=(res.turn===1||res.turn===3);
+      var gateMissed=isGatedTurn&&res.scriptGated&&!res.scriptIntentHit;
+
+      if(gateMissed){
+        // Don't advance the turn counter. Pop the recruiter message we just added
+        // so messages.length stays at the previous turn's value (we'll add only the
+        // recruiter+candidate as visible chat but not as advancing-turn entries).
+        // Track miss count.
+        scriptMisses[res.turn]=(scriptMisses[res.turn]||0)+1;
+        gatedTurn=res.turn;
+        // Show the candidate's pushback line + SCRIPT MISS coach label.
+        await new Promise(function(resolve){setTimeout(resolve,1200)});
+        addMsg('c',res.candidateReply);
+        var missLabel='SCRIPT MISS: TURN '+res.turn;
+        var missBody=(res.body&&res.body.length>3)
+          ? res.body+' Candidate is waiting for the script intent — try again.'
+          : 'Required script intent for turn '+res.turn+' was not met. Candidate is waiting — try again with the prompted line.';
+        addTip(missLabel,missBody,true);
+        // Pop the recruiter+(no candidate yet pushed) so turn count stays put.
+        // We pushed recruiter onto messages above; pop it.
+        messages.pop();
+        violationCount++;
+        updateMetrics();updateScriptCard();
+        $id('micBtn').className='mic idle';$id('micBtn').textContent='🎤';
+        $id('stat').textContent='Try again — match the script intent';
+        await speak(res.candidateReply);
+        return;
+      }
+
+      // Normal path: turn advances.
+      // If we WERE gated and just hit the intent, clear the gate.
+      if(gatedTurn===res.turn&&res.scriptIntentHit){
+        gatedTurn=null;
+        scriptMisses[res.turn]=0;
+      }
+
       messages.push({r:false,t:res.candidateReply});
 
       // 1200ms delay before candidate responds — gives recruiter time to finish
