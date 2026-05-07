@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NeverSettle | Recruiter Training v2.2</title>
+<title>NeverSettle | Recruiter Training v2.3</title>
 <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;600;700;900&family=Barlow+Condensed:wght@700;900&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -98,7 +98,7 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--w
         <div class="logo-icon"><svg viewBox="0 0 16 16"><path d="M8 1L1 5v6l7 4 7-4V5L8 1zm0 2.2L13 6v4l-5 2.8L3 10V6l5-2.8z"/></svg></div>
         <h1>NeverSettle</h1>
       </div>
-      <div class="logo-v">v2.2 &middot; Recruiter Training</div>
+      <div class="logo-v">v2.3 &middot; Recruiter Training</div>
     </div>
     <div class="sec">Candidate archetypes</div>
     <button class="pbtn" id="p-skeptic">
@@ -321,9 +321,11 @@ function updateMetrics(){
   }
   if(whyScores.length){
     var last=whyScores[whyScores.length-1];
-    $id('mW').textContent=last+'%';
-    var wb=$id('mWb');wb.style.width=last+'%';
-    wb.className='fill'+(last>=75?' good':last>=50?'':' warn');
+    var avg=Math.round(whyScores.reduce(function(a,b){return a+b},0)/whyScores.length);
+    var weighted=whyScores.length>1?Math.round(last*0.5+avg*0.5):last;
+    $id('mW').textContent=weighted+'%';
+    var wb=$id('mWb');wb.style.width=weighted+'%';
+    wb.className='fill'+(weighted>=75?' good':weighted>=50?'':' warn');
   }
   $id('mV').textContent=violationCount;
   $id('mVb').style.width=Math.min(violationCount*25,100)+'%';
@@ -439,7 +441,7 @@ async function callClaude(text){
 
   var coachInstr=turn<=2
     ?'COACH_LABEL: SCRIPT CHECK | COACH_BODY: [Score whether recruiter hit the intent. Lenient.] | RED: false | WHY: 50 | DEPTH: 0 | YOUVIOL: false | COMPVIOL: false | OBJ1: false | OBJ2: false | OBJ3: false | OBJ4: false'
-    :'COACH_LABEL: [2-4 WORD CAPS] | COACH_BODY: [1-2 sentences — describe what recruiter just did, coaching backward only, no prescriptive advice, no "you should"] | RED: [true/false] | WHY: [0-100] | DEPTH: [0-5 layers on one WHY thread before switching] | YOUVIOL: [true if recruiter said "you would" "you seem" "you should" "you are" addressing candidate directly] | COMPVIOL: [true if recruiter mentioned comp/income/earnings/money before candidate brought it up] | OBJ1: [true if emotion word surfaced AND recruiter mirrored it] | OBJ2: [true if recruiter completed BOTH what-does-it-mean AND why-does-it-matter] | OBJ3: [true if recruiter used label language: "it seems like" OR "it sounds like" OR "it feels like"] | OBJ4: [true if recruiter challenged candidate to validate with real example AND candidate gave one]\n\nSCORING RULES:\nWHY 85-100: mirrored exact emotion word OR asked what-does-it-mean OR why-does-it-matter OR used label language\nWHY 70-84: strong discovery question, stayed in WHY territory\nWHY 50-69: decent question in discovery\nWHY 30-49: slight drift toward role or logistics\nWHY 10-29 RED: recruiter asked about hours/schedule/experience/what candidate wants to DO (not accomplish)\nWHY 0-15 RED: said JOB not career / mentioned comp unprompted / said you would be perfect\nYOUVIOL deduct 15 from WHY. COMPVIOL deduct 20 from WHY.\nCONTEXT RULE: If candidate asked about company or role in previous turn, recruiter may use Defer to Company — do NOT flag as drift. Score as CLEAN DEFER green.\nACCOMPLISH RULE: "What are you looking to accomplish" is correct methodology. NEVER flag as WHAT drift.\nTRAP SETUP: "sounds like you have given this thought" or "seems like you have thought about this" or similar = TRAP SET green. Not generic praise. Never flag as GENERIC PRAISE.\nIN-GROUP RULE: Complement step requires third-person framing — "those who are selected" "candidates who do well here" — NEVER "you are perfect" or "people like you" — that gives the job away. Flag as GAVE IT AWAY red if direct.\nSPEECH TOLERANCE: If recruiter phrase closely matches a known methodology move, score it as that move. Charitable interpretation always.\nRAPPORT BUILD label: Do NOT fire this label. If recruiter acknowledged something without a technique, score it neutrally in the COACH_BODY — do not credit it as a technique.\nEMOTION WORD SURFACED: When candidate drops an emotion word and recruiter has not yet used the two-step — note in COACH_BODY that an emotion word is available for the two-step. Do not score it as a completed objective yet.\n\nLABELS GREEN: CLEAN SCRIPT|GREAT MIRROR|WHAT IT MEANS|WHY IT MATTERS|LABEL FIRED|TRAP SET|CHALLENGE LANDED|CLEAN DEFER|DISCOVERY WIN|DEPTH WIN|EMOTION SURFACED\nLABELS RED: WHAT DRIFT|WORD CHOICE: JOB|COMP TOO EARLY|YOU VIOLATION|GAVE IT AWAY|SURFACE PIVOT|GENERIC PRAISE';
+    :'COACH_LABEL: [2-4 WORD CAPS] | COACH_BODY: [1-2 sentences — describe what recruiter just did, coaching backward only, no prescriptive advice, no "you should"] | RED: [true/false] | WHY: [0-100] | DEPTH: [0-5 layers on one WHY thread before switching] | YOUVIOL: [true if recruiter said "you would" "you seem" "you should" "you are" addressing candidate directly] | COMPVIOL: [true if recruiter mentioned comp/income/earnings/money before candidate brought it up] | OBJ1: [true if emotion word surfaced AND recruiter mirrored it] | OBJ2: [true if recruiter completed BOTH what-does-it-mean AND why-does-it-matter] | OBJ3: [true if recruiter used label language: "it seems like" OR "it sounds like" OR "it feels like"] | OBJ4: [true if recruiter challenged candidate to validate with real example AND candidate gave one]\n\nSCORING RULES:\nWHY 85-100: mirrored exact emotion word OR asked what-does-it-mean OR why-does-it-matter OR used label language\nWHY 70-84: strong discovery question, stayed in WHY territory\nWHY 50-69: decent question in discovery\nWHY 30-49: slight drift toward role or logistics\nWHY 10-29 RED: recruiter asked about hours/schedule/experience/what candidate wants to DO (not accomplish)\nWHY 0-15 RED: said JOB not career / mentioned comp unprompted / said you would be perfect / used unprofessional language (slang, terms of endearment like "baby" "buttercup" "bro" directed at candidate) / gave away the role or told candidate they are hired before any discovery\nYOUVIOL deduct 15 from WHY. COMPVIOL deduct 20 from WHY.\nCONTEXT RULE: If candidate asked about company or role in previous turn, recruiter may use Defer to Company — do NOT flag as drift. Score as CLEAN DEFER green.\nACCOMPLISH RULE: "What are you looking to accomplish" is correct methodology. NEVER flag as WHAT drift.\nTRAP SETUP: "sounds like you have given this thought" or "seems like you have thought about this" or similar = TRAP SET green. Not generic praise. Never flag as GENERIC PRAISE.\nIN-GROUP RULE: Complement step requires third-person framing — "those who are selected" "candidates who do well here" — NEVER "you are perfect" or "people like you" — that gives the job away. Flag as GAVE IT AWAY red if direct.\nSPEECH TOLERANCE: If recruiter phrase closely matches a known methodology move, score it as that move. Charitable interpretation always.\nRAPPORT BUILD label: Do NOT fire this label. If recruiter acknowledged something without a technique, score it neutrally in the COACH_BODY — do not credit it as a technique.\nEMOTION WORD SURFACED: When candidate drops an emotion word and recruiter has not yet used the two-step — note in COACH_BODY that an emotion word is available for the two-step. Do not score it as a completed objective yet.\n\nLABELS GREEN: CLEAN SCRIPT|GREAT MIRROR|WHAT IT MEANS|WHY IT MATTERS|LABEL FIRED|TRAP SET|CHALLENGE LANDED|CLEAN DEFER|DISCOVERY WIN|DEPTH WIN|EMOTION SURFACED\nLABELS RED: WHAT DRIFT|WORD CHOICE: JOB|COMP TOO EARLY|YOU VIOLATION|GAVE IT AWAY|SURFACE PIVOT|GENERIC PRAISE|UNPROFESSIONAL';
 
   var prompt='You are '+persona.name+', a '+persona.role+' on a phone call with a Momentum Solar recruiter.\n\n'+persona.bio+'\n\nRecruiter found you because you '+src+'.\nThis is turn '+turn+'.\n\n'+scriptCtx+openNote+'RESPOND ONLY AS THE CANDIDATE. 1-3 sentences MAX. Answer only what was asked — one layer then stop. Natural tone.\n\n'+(history?'CONVERSATION:\n'+history+'\n\n':'')+'After your candidate response on a NEW LINE output EXACTLY (all one line):\n'+coachInstr+'\n\nRECRUITER JUST SAID: '+text;
 
@@ -492,7 +494,7 @@ function startRecording(){
     isRecording=false;
 
     // Reject only if completely empty or single character nonsense
-    if(!transcript||transcript.length<2){
+    if(!transcript||transcript.length<1||/^[^a-zA-Z]+$/.test(transcript)){
       addTip('UNCLEAR CAPTURE','Speech was not captured — try again.',true);
       $id('micBtn').className='mic idle';$id('micBtn').textContent='🎤';
       $id('stat').textContent='Try again — speak clearly';
