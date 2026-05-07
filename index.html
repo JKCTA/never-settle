@@ -387,17 +387,23 @@ var VOICE_IDS = {
 function speak(text){
   return new Promise(async function(resolve){
     if(!persona){resolve();return;}
-    var voiceId = VOICE_IDS[Object.keys(PERSONAS).find(function(k){return PERSONAS[k]===persona;})] || VOICE_IDS.skeptic;
+    var personaKey = Object.keys(PERSONAS).find(function(k){return PERSONAS[k]===persona;});
+    var voiceId = VOICE_IDS[personaKey] || VOICE_IDS.skeptic;
     try {
       var resp = await fetch(WORKER_URL+'/tts', {
         method:'POST',
         headers:{'Content-Type':'application/json'},
         body:JSON.stringify({text:text, voice_id:voiceId})
       });
-      if(!resp.ok){resolve();return;}
+      if(!resp.ok){
+        console.warn('TTS failed:', resp.status, await resp.text());
+        resolve();return;
+      }
       var data = await resp.json();
-      if(!data.audio){resolve();return;}
-      // Decode base64 and play
+      if(!data.audio){
+        console.warn('TTS no audio in response:', data);
+        resolve();return;
+      }
       var binary = atob(data.audio);
       var bytes = new Uint8Array(binary.length);
       for(var i=0;i<binary.length;i++) bytes[i]=binary.charCodeAt(i);
@@ -406,9 +412,10 @@ function speak(text){
       var audio = new Audio(url);
       isSpeaking=true;
       audio.onended=function(){isSpeaking=false;URL.revokeObjectURL(url);resolve()};
-      audio.onerror=function(){isSpeaking=false;resolve()};
-      audio.play().catch(function(){isSpeaking=false;resolve()});
+      audio.onerror=function(e){console.warn('Audio error:',e);isSpeaking=false;resolve()};
+      audio.play().catch(function(e){console.warn('Play error:',e);isSpeaking=false;resolve()});
     } catch(e){
+      console.warn('TTS exception:',e);
       isSpeaking=false;resolve();
     }
   });
