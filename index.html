@@ -24,7 +24,7 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--w
 .logo h1{font-size:13px;font-weight:600;color:var(--white)}
 .logo-v{font-size:10px;color:var(--green);font-family:var(--mono);letter-spacing:.05em}
 .sec{padding:14px 18px 5px;font-size:10px;font-weight:600;color:var(--gray);text-transform:uppercase;letter-spacing:.08em}
-.pbtn{display:block;width:100%;text-align:left;padding:9px 18px;background:transparent;border:none;border-left:3px solid transparent;cursor:pointer;line-height:1.4;transition:background .1s}
+.pbtn{display:block;width:100%;text-align:left;padding:9px 18px;background:transparent;border:none;border-left:3px solid transparent;cursor:pointer;line-height:1.4;transition:background .1s;user-select:none;-webkit-user-select:none;position:relative;z-index:1}
 .pbtn:hover{background:var(--bg)}
 .pbtn.active{background:var(--green-dim);border-left-color:var(--green)}
 .pbtn .pn{display:block;font-size:13px;font-weight:500;color:var(--white)}
@@ -36,7 +36,7 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--w
 .diff-m{background:rgba(239,159,39,.2);color:var(--amber)}
 .diff-e{background:rgba(0,200,150,.15);color:var(--green)}
 .src-wrap{padding:12px 18px;border-top:1px solid var(--border)}
-.sbtn{display:block;width:100%;text-align:left;padding:7px 10px;margin-bottom:5px;background:#1a1a1a;border:1px solid var(--border);border-radius:7px;font-size:12px;font-family:var(--font);color:var(--gray);cursor:pointer;transition:all .1s}
+.sbtn{display:block;width:100%;text-align:left;padding:7px 10px;margin-bottom:5px;background:#1a1a1a;border:1px solid var(--border);border-radius:7px;font-size:12px;font-family:var(--font);color:var(--gray);cursor:pointer;transition:all .1s;user-select:none;-webkit-user-select:none;position:relative;z-index:1}
 .sbtn:hover{background:var(--bg);border-color:var(--gray)}
 .sbtn.active{background:var(--green) !important;color:#000 !important;border-color:var(--green)}
 .obj-wrap{padding:12px 18px 16px;border-top:1px solid var(--border);flex:1}
