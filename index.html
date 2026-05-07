@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NeverSettle | Recruiter Training v2.1</title>
+<title>NeverSettle | Recruiter Training v2.2</title>
 <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;600;700;900&family=Barlow+Condensed:wght@700;900&display=swap" rel="stylesheet">
 <style>
 :root {
-  --green:#00C896;--green-dim:rgba(0,200,150,0.12);--red:#c0392b;--red-dim:rgba(192,57,43,0.12);
-  --amber:#EF9F27;--amber-dim:rgba(239,159,39,0.12);--blue:#4A90D9;--blue-dim:rgba(74,144,217,0.12);
-  --bg:#080808;--surface:#101010;--surface2:#161616;--border:rgba(255,255,255,0.08);
+  --green:#00C896;--green-dim:rgba(0,200,150,0.12);--red:#c0392b;
+  --amber:#EF9F27;--amber-dim:rgba(239,159,39,0.12);
+  --bg:#080808;--surface2:#161616;--border:rgba(255,255,255,0.08);
   --white:#ffffff;--gray:rgba(255,255,255,0.45);--gray2:rgba(255,255,255,0.15);
   --sidebar-w:252px;--font:'Barlow',sans-serif;--mono:'Barlow Condensed',monospace;
 }
@@ -40,88 +40,54 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--w
 .sbtn:hover{background:var(--bg);border-color:var(--gray)}
 .sbtn.active{background:var(--green) !important;color:#000 !important;border-color:var(--green)}
 .obj-wrap{padding:12px 18px 16px;border-top:1px solid var(--border);flex:1}
-.obj-item{display:flex;align-items:flex-start;gap:9px;padding:6px 0;border-bottom:1px solid var(--border)}
+.obj-item{display:flex;align-items:flex-start;gap:9px;padding:7px 0;border-bottom:1px solid var(--border)}
 .obj-item:last-child{border-bottom:none}
-.obj-icon{width:16px;height:16px;border-radius:50%;border:1.5px solid rgba(255,255,255,.2);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:9px;transition:all .3s;margin-top:1px}
+.obj-icon{width:18px;height:18px;border-radius:50%;border:1.5px solid rgba(255,255,255,.2);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;transition:all .3s;margin-top:1px}
 .obj-icon.done{background:var(--green);border-color:var(--green);color:#000}
-.obj-icon.phase2{background:var(--blue);border-color:var(--blue);color:#fff}
-.obj-text{font-size:10px;color:rgba(255,255,255,.5);line-height:1.4}
+.obj-text{font-size:11px;color:rgba(255,255,255,.5);line-height:1.5}
 .obj-text.done{color:var(--green);font-weight:500}
-.obj-text.locked{color:rgba(255,255,255,.2);font-style:italic}
-.phase-label{font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:4px 18px 2px;color:var(--amber)}
 .main{flex:1;display:flex;flex-direction:column;height:100vh;overflow:hidden;min-width:0}
-.topbar{flex-shrink:0;background:#0d0d0d;border-bottom:1px solid var(--border);padding:10px 22px;display:flex;align-items:center;justify-content:space-between;gap:12px}
-.topbar h2{font-size:14px;font-weight:600;color:var(--white);letter-spacing:-.01em}
-.topbar-sub{font-size:10px;color:var(--gray);font-family:var(--mono);margin-top:1px}
-.abadge{font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;padding:3px 10px;border-radius:99px;flex-shrink:0}
+.topbar{flex-shrink:0;background:#0d0d0d;border-bottom:1px solid var(--border);padding:13px 22px;display:flex;align-items:center;justify-content:space-between}
+.topbar h2{font-size:15px;font-weight:600;color:var(--white);letter-spacing:-.01em}
+.topbar-sub{font-size:11px;color:var(--gray);font-family:var(--mono);margin-top:2px}
+.abadge{font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;padding:3px 10px;border-radius:99px}
 .ab-s{background:rgba(192,57,43,.15);color:#e05a4a;border:1px solid rgba(192,57,43,.3)}
 .ab-c{background:rgba(239,159,39,.12);color:var(--amber);border:1px solid rgba(239,159,39,.25)}
 .ab-h{background:rgba(0,200,150,.1);color:var(--green);border:1px solid rgba(0,200,150,.2)}
-/* Timer bar */
-.timer-bar{flex-shrink:0;display:flex;align-items:center;gap:10px;padding:6px 22px;background:#0a0a0a;border-bottom:1px solid var(--border)}
-.phase-pill{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:3px 10px;border-radius:99px;flex-shrink:0}
-.phase-a{background:rgba(0,200,150,.15);color:var(--green);border:1px solid rgba(0,200,150,.3)}
-.phase-b{background:rgba(74,144,217,.15);color:var(--blue);border:1px solid rgba(74,144,217,.3)}
-.timer-clock{font-size:18px;font-weight:700;font-family:var(--mono);color:var(--white);flex-shrink:0;min-width:52px}
-.timer-clock.warn{color:var(--amber)}
-.timer-clock.over{color:var(--red)}
-.timer-track{flex:1;height:4px;background:var(--surface2);border-radius:2px;overflow:hidden}
-.timer-fill{height:100%;background:var(--green);border-radius:2px;transition:width .5s}
-.timer-fill.warn{background:var(--amber)}
-.timer-fill.over{background:var(--red)}
-.timer-label{font-size:10px;color:var(--gray);font-family:var(--mono);flex-shrink:0}
-.timer-phase-b{font-size:10px;color:var(--gray);font-family:var(--mono);flex-shrink:0}
-/* Metrics */
-.metrics{flex-shrink:0;display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:8px 22px}
-.metric{background:#1a1a1a;border:1px solid var(--border);border-radius:10px;padding:9px 12px}
-.metric .v{font-size:18px;font-weight:600;color:var(--green);letter-spacing:-.02em}
-.metric .l{font-size:9px;color:var(--gray);margin-top:2px;line-height:1.4}
-.bar{height:3px;background:var(--surface2);border-radius:2px;margin-top:6px;overflow:hidden}
+.metrics{flex-shrink:0;display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:12px 22px}
+.metric{background:#1a1a1a;border:1px solid var(--border);border-radius:10px;padding:11px 14px}
+.metric .v{font-size:20px;font-weight:600;color:var(--green);letter-spacing:-.02em}
+.metric .l{font-size:10px;color:var(--gray);margin-top:2px;line-height:1.4}
+.bar{height:3px;background:var(--surface2);border-radius:2px;margin-top:8px;overflow:hidden}
 .fill{height:100%;background:var(--green);border-radius:2px;transition:width .4s}
 .fill.warn{background:var(--amber)}.fill.bad{background:var(--red)}.fill.good{background:var(--green)}
-/* Script card */
-.script-card{flex-shrink:0;display:none;margin:0 22px 6px;background:var(--amber-dim);border:1px solid rgba(239,159,39,.3);border-radius:10px;padding:10px 14px}
-.sc-lbl{font-size:10px;font-weight:600;color:var(--amber);text-transform:uppercase;letter-spacing:.07em;margin-bottom:3px}
-.sc-txt{font-size:13px;color:#fff;font-style:italic;line-height:1.5}
-.sc-sub{font-size:10px;color:var(--gray);margin-top:3px}
-/* MIT tracker */
-.mit-tracker{flex-shrink:0;display:none;margin:0 22px 6px;background:var(--blue-dim);border:1px solid rgba(74,144,217,.3);border-radius:10px;padding:10px 14px}
-.mit-lbl{font-size:10px;font-weight:600;color:var(--blue);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px}
-.mit-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.mit-slot{background:#0d0d0d;border:1px solid var(--border);border-radius:7px;padding:7px 9px}
-.mit-slot.captured{border-color:var(--green);background:rgba(0,200,150,.05)}
-.mit-slot.dug{border-color:var(--blue);background:rgba(74,144,217,.05)}
-.mit-num{font-size:9px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:.06em}
-.mit-val{font-size:11px;color:var(--white);margin-top:2px;min-height:16px}
-.mit-status{font-size:9px;margin-top:3px}
-.mit-status.cap{color:var(--green)}
-.mit-status.dug{color:var(--blue)}
-/* Chat */
-.chat{flex:1;overflow-y:auto;margin:0 22px 6px;background:#0f0f0f;border:1px solid var(--border);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:7px}
-.msg{max-width:80%;padding:8px 12px;border-radius:10px;font-size:13px;line-height:1.6}
+.script-card{flex-shrink:0;display:none;margin:0 22px 8px;background:var(--amber-dim);border:1px solid rgba(239,159,39,.3);border-radius:10px;padding:11px 14px}
+.sc-lbl{font-size:10px;font-weight:600;color:var(--amber);text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px}
+.sc-txt{font-size:13px;color:#fff;font-style:italic;line-height:1.6}
+.sc-sub{font-size:11px;color:var(--gray);margin-top:4px}
+.chat{flex:1;overflow-y:auto;margin:0 22px 8px;background:#0f0f0f;border:1px solid var(--border);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:8px}
+.msg{max-width:80%;padding:9px 13px;border-radius:10px;font-size:13px;line-height:1.6}
 .msg.r{align-self:flex-end;background:var(--green);color:#000;border-radius:12px 12px 3px 12px}
 .msg.c{align-self:flex-start;background:var(--bg);border:1px solid var(--border);color:var(--white);border-radius:12px 12px 12px 3px}
 .msg.s{align-self:center;font-size:11px;color:var(--gray);font-family:var(--mono);background:none}
-.tip-box{align-self:center;max-width:94%;border-radius:8px;padding:9px 13px;margin:2px 0;background:var(--green)}
+.tip-box{align-self:center;max-width:94%;border-radius:8px;padding:10px 14px;margin:2px 0;background:var(--green)}
 .tip-box.red{background:var(--red)}
-.tip-box.blue{background:var(--blue)}
-.tip-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#fff;margin-bottom:3px;font-family:var(--mono)}
-.tip-body{font-size:12px;color:#fff;line-height:1.5}
-/* Controls */
-.controls{flex-shrink:0;display:flex;align-items:center;gap:10px;padding:0 22px 8px}
-.mic{width:44px;height:44px;border-radius:50%;border:none;cursor:pointer;font-size:17px;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:transform .1s}
+.tip-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#fff;margin-bottom:4px;font-family:var(--mono)}
+.tip-body{font-size:12px;color:#fff;line-height:1.6}
+.controls{flex-shrink:0;display:flex;align-items:center;gap:10px;padding:0 22px 10px}
+.mic{width:48px;height:48px;border-radius:50%;border:none;cursor:pointer;font-size:18px;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:transform .1s}
 .mic:active{transform:scale(.93)}
 .mic.idle{background:var(--green);color:#000}
 .mic.recording{background:var(--red);color:#fff;animation:pulse 1s infinite}
-.mic.thinking{background:#333;color:#fff;font-size:12px}
-@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.07)}}
-.stat{flex:1;font-size:11px;color:var(--gray);font-family:var(--mono)}
+.mic.thinking{background:#333;color:#fff;font-size:13px}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+.stat{flex:1;font-size:12px;color:var(--gray);font-family:var(--mono)}
 .vwrap{display:flex;align-items:center;gap:6px}
-.vwrap label{font-size:10px;color:var(--gray);white-space:nowrap}
-.vwrap select{font-size:11px;padding:4px 7px;border:1px solid var(--border);border-radius:7px;background:#1a1a1a;font-family:var(--font);color:var(--gray);max-width:150px}
-.rbtn{font-size:11px;padding:6px 12px;border:1px solid var(--border);border-radius:7px;background:#1a1a1a;color:var(--gray);cursor:pointer;font-family:var(--font)}
+.vwrap label{font-size:11px;color:var(--gray);white-space:nowrap}
+.vwrap select{font-size:12px;padding:5px 8px;border:1px solid var(--border);border-radius:7px;background:#1a1a1a;font-family:var(--font);color:var(--gray);max-width:160px}
+.rbtn{font-size:12px;padding:7px 14px;border:1px solid var(--border);border-radius:7px;background:#1a1a1a;color:var(--gray);cursor:pointer;font-family:var(--font)}
 .rbtn:hover{background:var(--bg)}
-.hint-bar{flex-shrink:0;padding:0 22px 8px;font-size:10px;color:var(--gray);font-family:var(--mono);display:flex;gap:12px;flex-wrap:wrap}
+.hint-bar{flex-shrink:0;padding:0 22px 10px;font-size:11px;color:var(--gray);font-family:var(--mono);display:flex;gap:14px;flex-wrap:wrap}
 </style>
 </head>
 <body>
@@ -132,7 +98,7 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--w
         <div class="logo-icon"><svg viewBox="0 0 16 16"><path d="M8 1L1 5v6l7 4 7-4V5L8 1zm0 2.2L13 6v4l-5 2.8L3 10V6l5-2.8z"/></svg></div>
         <h1>NeverSettle</h1>
       </div>
-      <div class="logo-v">v2.1 &middot; Recruiter Training</div>
+      <div class="logo-v">v2.2 &middot; Recruiter Training</div>
     </div>
     <div class="sec">Candidate archetypes</div>
     <button class="pbtn" id="p-skeptic">
@@ -147,7 +113,7 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--w
     </button>
     <button class="pbtn" id="p-hungry">
       <span class="pn">Jasmine T. <span class="diff diff-e">Entry</span></span>
-      <span class="pr">Retail / Single Mom</span>
+      <span class="pr">Retail / 23 yrs old</span>
       <span class="pt">Young Hungry</span>
     </button>
     <div class="src-wrap">
@@ -157,15 +123,14 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--w
       <button class="sbtn" id="s-linkedin">LinkedIn outreach</button>
     </div>
     <div class="obj-wrap">
-      <div class="sec" style="padding:0 0 6px">Section A objectives</div>
-      <div class="phase-label">OPEN</div>
+      <div class="sec" style="padding:0 0 10px">Section A objectives</div>
       <div class="obj-item">
         <div class="obj-icon" id="obj1-icon"></div>
         <div class="obj-text" id="obj1-text">Emotion word or phrase surfaced</div>
       </div>
       <div class="obj-item">
         <div class="obj-icon" id="obj2-icon"></div>
-        <div class="obj-text" id="obj2-text">Two-step: what it means + why it matters</div>
+        <div class="obj-text" id="obj2-text">Two-step complete: what it means + why it matters</div>
       </div>
       <div class="obj-item">
         <div class="obj-icon" id="obj3-icon"></div>
@@ -173,20 +138,7 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--w
       </div>
       <div class="obj-item">
         <div class="obj-icon" id="obj4-icon"></div>
-        <div class="obj-text" id="obj4-text">Challenge from understanding + rapport</div>
-      </div>
-      <div class="phase-label" style="color:var(--blue);padding-top:8px">TRANSITION</div>
-      <div class="obj-item">
-        <div class="obj-icon" id="obj5-icon"></div>
-        <div class="obj-text" id="obj5-text" class="locked">Career vs job confirmed</div>
-      </div>
-      <div class="obj-item">
-        <div class="obj-icon" id="obj6-icon"></div>
-        <div class="obj-text" id="obj6-text" class="locked">MIT question — verbatim</div>
-      </div>
-      <div class="obj-item">
-        <div class="obj-icon" id="obj7-icon"></div>
-        <div class="obj-text" id="obj7-text" class="locked">All 3 MITs captured + dug into</div>
+        <div class="obj-text" id="obj4-text">Challenge — candidate validated with real example</div>
       </div>
     </div>
   </div>
@@ -200,34 +152,17 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--w
       <div id="archBadge"></div>
     </div>
 
-    <div class="timer-bar">
-      <div class="phase-pill phase-a" id="phasePill">SECTION A</div>
-      <div class="timer-clock" id="timerClock">0:00</div>
-      <div class="timer-track"><div class="timer-fill" id="timerFill" style="width:0"></div></div>
-      <div class="timer-label" id="timerLabel">0–10 min target</div>
-      <div class="timer-phase-b" id="timerPhaseB" style="display:none"></div>
-    </div>
-
     <div class="metrics">
-      <div class="metric"><div class="v" id="mT">0</div><div class="l">Turns</div><div class="bar"><div class="fill" id="mTb" style="width:0"></div></div></div>
-      <div class="metric"><div class="v" id="mD">--</div><div class="l">Vertical depth<br><span style="font-size:8px;opacity:.6">layers per thread</span></div><div class="bar"><div class="fill" id="mDb" style="width:0"></div></div></div>
-      <div class="metric"><div class="v" id="mW">--</div><div class="l">WHY score<br><span style="font-size:8px;opacity:.6">target 80+</span></div><div class="bar"><div class="fill" id="mWb" style="width:0"></div></div></div>
-      <div class="metric"><div class="v" id="mV">0</div><div class="l">Violations<br><span style="font-size:8px;opacity:.6">"you" + early comp</span></div><div class="bar"><div class="fill bad" id="mVb" style="width:0"></div></div></div>
+      <div class="metric"><div class="v" id="mT">0</div><div class="l">Conversation turns</div><div class="bar"><div class="fill" id="mTb" style="width:0"></div></div></div>
+      <div class="metric"><div class="v" id="mD">--</div><div class="l">Vertical depth<br><span style="font-size:9px;opacity:.6">layers per thread</span></div><div class="bar"><div class="fill" id="mDb" style="width:0"></div></div></div>
+      <div class="metric"><div class="v" id="mW">--</div><div class="l">WHY score<br><span style="font-size:9px;opacity:.6">target 80+</span></div><div class="bar"><div class="fill" id="mWb" style="width:0"></div></div></div>
+      <div class="metric"><div class="v" id="mV">0</div><div class="l">Violations<br><span style="font-size:9px;opacity:.6">"you" + early comp</span></div><div class="bar"><div class="fill bad" id="mVb" style="width:0"></div></div></div>
     </div>
 
     <div class="script-card" id="scriptCard">
       <div class="sc-lbl">&#128221; Script &mdash; say this now</div>
       <div class="sc-txt" id="scriptTxt"></div>
       <div class="sc-sub" id="scriptSub"></div>
-    </div>
-
-    <div class="mit-tracker" id="mitTracker">
-      <div class="mit-lbl">&#127775; Section B &mdash; MIT Tracker</div>
-      <div class="mit-grid">
-        <div class="mit-slot" id="mit1"><div class="mit-num">MIT 1</div><div class="mit-val" id="mit1v">—</div><div class="mit-status" id="mit1s"></div></div>
-        <div class="mit-slot" id="mit2"><div class="mit-num">MIT 2</div><div class="mit-val" id="mit2v">—</div><div class="mit-status" id="mit2s"></div></div>
-        <div class="mit-slot" id="mit3"><div class="mit-num">MIT 3</div><div class="mit-val" id="mit3v">—</div><div class="mit-status" id="mit3s"></div></div>
-      </div>
     </div>
 
     <div class="chat" id="chat">
@@ -246,8 +181,7 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--w
     <div class="hint-bar">
       <span>&#9679; Green = WHY move or technique</span>
       <span>&#9679; Red = drift or violation</span>
-      <span>&#9679; Blue = MIT / transition</span>
-      <span>&middot; Mirror until emotion word &rarr; What does that mean &rarr; Why does that matter &rarr; Label &rarr; Challenge &rarr; Transition after 3 min</span>
+      <span>&middot; Mirror until emotion word &rarr; What does that mean &rarr; Why does that matter &rarr; Label &rarr; Challenge</span>
     </div>
   </div>
 </div>
@@ -258,76 +192,68 @@ var WORKER_URL='https://momentum-trainer.jcapra.workers.dev';
 var PERSONAS={
 skeptic:{
   name:'Marcus K.',role:'GM / District Manager',archetype:'Seasoned Skeptic',archClass:'ab-s',
-  gender:'male',
   bio:`You are Marcus K., 44. GM and District Manager background in automotive and retail. Currently employed making $168K. Exploring — not desperate. Promised a promotion for over a year, never came. Someone you trained got moved ahead of you.
 
-PERSONALITY: Direct, composed, measured. Quietly skeptical. You evaluate the recruiter as much as they evaluate you. Early turns — cooperative but guarded. You deflect with credentials. Skepticism and pushback BUILD GRADUALLY — not from turn 1. By turn 4-5 you start testing the recruiter. Trust is earned slowly.
+PERSONALITY: Direct, composed, measured. Quietly skeptical. You evaluate the recruiter as much as they evaluate you. Skepticism builds GRADUALLY — cooperative turns 1-3, testing turns 4+. You are not rude. Trust is earned slowly.
 
-TURN 2 BEHAVIOR: When recruiter introduces themselves — simply say "Okay, what's this about?" or "Sure, go ahead." Do NOT challenge yet.
+TURN 2 BEHAVIOR: When recruiter introduces themselves say only "Okay, what's this about?" or "Sure, go ahead." Do NOT challenge yet.
 
-ONE LAYER AT A TIME RULE: Answer only what was directly asked. Give one piece of information. Stop. Wait. Never volunteer the next layer, the next emotion word, or the next story. The recruiter must earn each layer with a follow-up question.
+ONE LAYER AT A TIME: Answer only what was directly asked. Give one piece of information. Stop. Wait. Never volunteer the next layer.
 
-REAL EMOTION WORDS (surface one at a time only when recruiter digs — turn 4 onward):
+REAL EMOTION WORDS (surface one at a time — turn 4 onward only):
 "ceiling" / "burned before" / "end game" / "empty promise" / "working toward something" / "take a step back" / "next in line"
 
 OPENING — Turn 3 only: "Honestly I just started looking. I'm still working. I feel like I'm at a ceiling — been told I'm next in line for over a year and nothing has changed. So I'm just exploring."
 DO NOT repeat or add to this unless recruiter asks a specific follow-up.
 
-WHEN RECRUITER MIRRORS EMOTION WORD: Pause. Give exactly one layer deeper. One sentence. Stop.
-WHEN RECRUITER ASKS WHAT DOES THAT MEAN: Answer in 1-2 sentences only. Give the definition, not the story.
-WHEN RECRUITER ASKS WHY THAT MATTERS: Connect to one thing — family, stability, feeling valued. One sentence.
-WHEN RECRUITER CHALLENGES FOR EXAMPLE: Give the specific example — your manager gave district role to someone you trained. That is the whole story. Do not add more.
-WHEN RECRUITER USES TRAP SETUP ("seems like you've given this thought" / "sounds like you've thought about this"): Pause and agree — "Yeah, I suppose I have." This pre-commits you.
-WHEN RECRUITER LABELS WITH "IT SEEMS LIKE / SOUNDS LIKE / FEELS LIKE": Confirm or gently correct. One sentence.
-WHEN RECRUITER ATTEMPTS TRANSITION BEFORE 3 MIN: Redirect — "I mean I just started explaining my situation."
+WHEN RECRUITER MIRRORS EMOTION WORD: Give exactly one layer deeper. One sentence. Stop.
+WHEN RECRUITER ASKS WHAT DOES THAT MEAN: 1-2 sentences only. Definition, not the full story.
+WHEN RECRUITER ASKS WHY THAT MATTERS: One thing — family, stability, feeling valued. One sentence.
+WHEN RECRUITER CHALLENGES FOR EXAMPLE: Give the specific example — your manager gave district role to someone you trained. That is the full story. Stop there.
+WHEN RECRUITER USES TRAP SETUP ("seems like you've given this thought"): Agree — "Yeah, I suppose I have."
+WHEN RECRUITER LABELS ("it seems like / sounds like / feels like"): Confirm or gently correct. One sentence.
 WHEN RECRUITER ASKS CAREER VS JOB: "Yeah, I'd say career. I already have a job."
-WHEN MIT QUESTION ASKED: Give three things. Stop. Do not explain them yet — wait to be asked.
-WHEN RECRUITER DIGS INTO EACH MIT: Give one layer per question. Make recruiter earn each why.
 WHEN RECRUITER MENTIONS COMP: "I appreciate that but I've heard big numbers before. What does the path actually look like?"
+WHEN RECRUITER USES DEFER TO COMPANY (after you asked about the role): Cooperate naturally.
 WHEN RECRUITER SAYS "YOU WOULD BE PERFECT": Stay guarded — "I appreciate that."
-WHEN RECRUITER USES DEFER TO COMPANY: Cooperate — this is a valid response to your questions.
 
-RULES: 1-3 sentences MAX per response. Never volunteer information. Answer only what was asked. Skepticism builds gradually — cooperative turns 1-3, testing turns 4+.`
+RULES: 1-3 sentences MAX. Never volunteer information. Answer only what was asked. Skepticism builds gradually.`
 },
 changer:{
   name:'Ray D.',role:'Plumber / Trades — 17 yrs',archetype:'Life Changer',archClass:'ab-c',
-  gender:'male',
-  bio:`You are Ray D., 41. Plumber for 17 years. Bad car accident a year ago — staples in head, rebuilt shoulder, neck issue. Can't lift over 40 pounds anymore. Not working right now. Need work like yesterday. Scared but open. Always a people person — sold every job, built trust with every customer. Never had a career outside trades.
+  bio:`You are Ray D., 41. Plumber for 17 years. Bad car accident a year ago — staples in head, rebuilt shoulder, neck issue. Can't lift over 40 pounds. Not working. Need work like yesterday. Scared but open. Always been a people person — sold every job, built trust with every customer. Never had a career outside trades.
 
-PERSONALITY: Warm, real, self-deprecating. You laugh at yourself sometimes. Open up quickly when someone treats you like a person. Not a sales guy — a trades guy trying to pivot.
+PERSONALITY: Warm, real, self-deprecating. Open up quickly when someone treats you like a person. Not a sales guy — a trades guy trying to pivot.
 
-ONE LAYER AT A TIME RULE: Answer only what was directly asked. Give one piece of information. Stop. Wait. The recruiter must ask the next question to get the next layer. Never dump the full story unprompted.
+ONE LAYER AT A TIME: Answer only what was directly asked. One piece of information. Stop. Wait. Never dump the full story unprompted.
 
-REAL EMOTION WORDS (surface one at a time only when recruiter earns it):
+REAL EMOTION WORDS (surface one at a time — only when recruiter earns it):
 "rough" / "starting over" / "worried" / "taking care of my family" / "good at something again" / "need to work" / "built trust" / "always been good with people"
 
 OPENING — Turn 3 only: "Honestly it's been rough. I've been a plumber my whole life and I got into a bad accident. I can't do the physical work anymore. So I'm kind of starting over and I'm not sure where to go."
 DO NOT repeat or add to this unless recruiter asks a specific follow-up.
 
-WHEN RECRUITER MIRRORS "ROUGH" OR "STARTING OVER": Give one layer — "Yeah, I'm 41 and feel like I'm starting from zero." Stop.
-WHEN RECRUITER ASKS WHAT DOES THAT MEAN: Talk identity only — one sentence. "I knew what I was doing every day. Now I don't."
-WHEN RECRUITER ASKS WHY THAT MATTERS: Family — one sentence. "I have a family to take care of. I can't just sit around."
+WHEN RECRUITER MIRRORS "ROUGH" OR "STARTING OVER": One layer — "Yeah, I'm 41 and feel like I'm starting from zero." Stop.
+WHEN RECRUITER ASKS WHAT DOES THAT MEAN: One sentence — "I knew what I was doing every day. Now I don't."
+WHEN RECRUITER ASKS WHY THAT MATTERS: One sentence — "I have a family to take care of. I can't just sit around."
 WHEN RECRUITER CHALLENGES FOR EXAMPLE: Only then give the $48K job story — commercial building, 4 hours, customer trusted you completely. This is the FULL example. Do not give it before the challenge.
 WHEN RECRUITER USES TRAP SETUP: Agree — "Yeah I guess I have been thinking about this a lot."
-WHEN RECRUITER LABELS WITH "IT SEEMS LIKE / SOUNDS LIKE / FEELS LIKE": Confirm warmly. One sentence.
-WHEN RECRUITER ATTEMPTS TRANSITION BEFORE 3 MIN: "Yeah I mean I still have a lot going on with the situation."
+WHEN RECRUITER LABELS ("it seems like / sounds like / feels like"): Confirm warmly. One sentence.
 WHEN RECRUITER ASKS CAREER VS JOB: "Yeah career for sure. A job isn't gonna cut it at this point."
-WHEN MIT QUESTION ASKED: Give three things. Stop. Wait to be asked about each one.
-WHEN RECRUITER MENTIONS COMP EARLY: "Money matters yeah. But honestly I just need to feel like I'm doing something again."
-WHEN RECRUITER USES DEFER TO COMPANY: Cooperate — answer naturally.
+WHEN RECRUITER MENTIONS COMP EARLY: "Money matters yeah. But right now I just need to feel like I'm doing something again."
+WHEN RECRUITER USES DEFER TO COMPANY: Cooperate naturally.
 
 RULES: 1-3 sentences MAX. Warm and real. One layer at a time. Never give the next piece until asked.`
 },
 hungry:{
-  name:'Jasmine T.',role:'Retail / Single Mom',archetype:'Young Hungry',archClass:'ab-h',
-  gender:'female',
-  bio:`You are Jasmine T., 23. Single mom. You work retail — cashier and floor associate at Target. Making $14/hr. You have a 4-year-old daughter named Zoe. You live with your mom right now and you want to move out. You are ambitious but you hide it behind short answers because you have been overlooked before and you don't get your hopes up.
+  name:'Jasmine T.',role:'Retail / 23 yrs old',archetype:'Young Hungry',archClass:'ab-h',
+  bio:`You are Jasmine T., 23. You work retail — floor associate at Target making $14/hr. You have a 4-year-old daughter named Zoe. You live with your mom right now and want to move out and be on your own. Ambitious but guarded — you have been overlooked before and don't get your hopes up easily.
 
-PERSONALITY: Upbeat but guarded. Short answers until someone proves they actually care. When recruiter takes real interest in Zoe or your goals — you open up genuinely and animatedly. You have real drive underneath.
+PERSONALITY: Upbeat but guarded. Short answers until someone proves they actually care. When recruiter takes real interest in Zoe or your goals — you open up genuinely. Real drive underneath.
 
-ONE LAYER AT A TIME RULE: Answer only what was directly asked. Short answer. Stop. Wait. Never volunteer the next layer. The recruiter must earn each piece.
+ONE LAYER AT A TIME: Answer only what was directly asked. Short answer. Stop. Wait. Never volunteer the next layer.
 
-REAL EMOTION WORDS (surface one at a time only when recruiter earns it):
+REAL EMOTION WORDS (surface one at a time — only when recruiter earns it):
 "my daughter" / "Zoe" / "move out" / "on my own" / "don't have to ask nobody for nothing" / "take care of her" / "something real" / "settled" / "ready" / "I know I can do it"
 
 OPENING — Turn 3 only: "It's been okay. I've been applying around. Just trying to find something better than what I have."
@@ -335,18 +261,16 @@ DO NOT repeat or add to this unless recruiter asks a specific follow-up.
 
 WHEN RECRUITER ASKS FOLLOW-UP ON SEARCH: "Just looking for more money and a real opportunity. Something I can actually grow in."
 WHEN RECRUITER ASKS WHAT YOU ARE LOOKING TO ACCOMPLISH: "Take care of myself and my daughter. I want to be able to do it on my own."
-WHEN RECRUITER MIRRORS "DAUGHTER": Open up one layer — "Yeah she's everything. Her name's Zoe. She's four." Stop.
+WHEN RECRUITER MIRRORS "DAUGHTER": Open one layer — "Yeah her name's Zoe. She's four." Stop.
 WHEN RECRUITER ASKS WHAT THAT MEANS TO YOU: "It means not having to ask anybody for help. Just being able to handle it."
-WHEN RECRUITER ASKS WHY THAT MATTERS: "Because I've had to depend on people my whole life and I'm tired of it. I want to be the one people can count on."
+WHEN RECRUITER ASKS WHY THAT MATTERS: "Because I've had to depend on people my whole life and I'm tired of it."
 WHEN RECRUITER BUILDS DREAM (own place, moving out): Get specific — "Yeah like a two bedroom, just me and Zoe. Nothing fancy. Just ours."
-WHEN RECRUITER CHALLENGES FOR EXAMPLE: Give it — at Target you trained three new hires last month even though it wasn't your job. Your manager noticed. You always end up being the one people come to.
+WHEN RECRUITER CHALLENGES FOR EXAMPLE: At Target you trained three new hires last month even though it wasn't your job. You always end up being the one people come to.
 WHEN RECRUITER USES TRAP SETUP: Agree — "Yeah I've definitely been thinking about this."
-WHEN RECRUITER LABELS WITH "IT SEEMS LIKE / SOUNDS LIKE / FEELS LIKE": Confirm. One sentence.
-WHEN RECRUITER ATTEMPTS TRANSITION BEFORE 3 MIN: "I mean yeah I guess. I just want to make sure it's the right thing."
+WHEN RECRUITER LABELS ("it seems like / sounds like / feels like"): Confirm. One sentence.
 WHEN RECRUITER ASKS CAREER VS JOB: "Career for sure. I can't afford to keep starting over."
-WHEN MIT QUESTION ASKED: Give three things. Stop. Wait to be asked about each one.
 WHEN RECRUITER MENTIONS COMP EARLY: "How much are people actually making?"
-WHEN RECRUITER USES DEFER TO COMPANY: Cooperate — answer naturally and stay curious.
+WHEN RECRUITER USES DEFER TO COMPANY: Cooperate naturally.
 
 RULES: 1-3 sentences MAX. Short answers early. Warm and real once recruiter earns it. One layer at a time. Never volunteer the next piece.`
 }
@@ -357,7 +281,6 @@ var SOURCES={
   'contact':'came across your profile on Indeed and reached out',
   'linkedin':'connected with you on LinkedIn'
 };
-
 var SOURCE_SCRIPT={
   'apply':'You applied to our posting on Indeed',
   'contact':'I came across your profile on Indeed',
@@ -367,11 +290,8 @@ var SOURCE_SCRIPT={
 var persona=null,sourceKey='apply';
 var messages=[],whyScores=[],depthScores=[],violationCount=0;
 var isRecording=false,isSpeaking=false,recog=null,voices=[];
-var objectives={obj1:false,obj2:false,obj3:false,obj4:false,obj5:false,obj6:false,obj7:false};
-var openingAnswered=false,phase='A';
-var sessionStart=null,timerInterval=null;
-var mitData=[{val:'',dug:false},{val:'',dug:false},{val:'',dug:false}];
-var transitionTime=null;
+var objectives={obj1:false,obj2:false,obj3:false,obj4:false};
+var openingAnswered=false;
 
 function $id(id){return document.getElementById(id)}
 
@@ -380,58 +300,19 @@ function addMsg(cls,text){
   var chat=$id('chat');chat.appendChild(d);chat.scrollTop=chat.scrollHeight;
 }
 
-function addTip(label,body,color){
-  // color: 'green','red','blue'
+function addTip(label,body,isRed){
   var box=document.createElement('div');
-  box.className='tip-box'+(color==='red'?' red':color==='blue'?' blue':'');
-  var lbl=document.createElement('div');lbl.className='tip-label';
-  lbl.textContent=(color==='red'?'⚠ ':'✓ ')+label;
+  box.className='tip-box'+(isRed?' red':'');
+  var lbl=document.createElement('div');lbl.className='tip-label';lbl.textContent=(isRed?'⚠ ':'✓ ')+label;
   var bd=document.createElement('div');bd.className='tip-body';bd.textContent=body;
   box.appendChild(lbl);box.appendChild(bd);
   var chat=$id('chat');chat.appendChild(box);chat.scrollTop=chat.scrollHeight;
 }
 
-function startTimer(){
-  if(timerInterval)clearInterval(timerInterval);
-  sessionStart=Date.now();
-  timerInterval=setInterval(function(){
-    var elapsed=Math.floor((Date.now()-sessionStart)/1000);
-    var mins=Math.floor(elapsed/60);
-    var secs=elapsed%60;
-    var display=mins+':'+(secs<10?'0':'')+secs;
-    $id('timerClock').textContent=display;
-    var target=phase==='A'?600:600; // 10 min each section
-    var pct=Math.min(elapsed/target*100,100);
-    var fill=$id('timerFill');
-    fill.style.width=pct+'%';
-    if(elapsed>target){
-      fill.className='timer-fill over';
-      $id('timerClock').className='timer-clock over';
-    } else if(elapsed>target*0.75){
-      fill.className='timer-fill warn';
-      $id('timerClock').className='timer-clock warn';
-    } else {
-      fill.className='timer-fill';
-      $id('timerClock').className='timer-clock';
-    }
-  },1000);
-}
-
-function switchToPhaseB(){
-  phase='B';
-  transitionTime=Math.floor((Date.now()-sessionStart)/1000);
-  $id('phasePill').className='phase-pill phase-b';
-  $id('phasePill').textContent='SECTION B';
-  $id('timerLabel').textContent='0–10 min target';
-  $id('mitTracker').style.display='block';
-  sessionStart=Date.now(); // reset timer for phase B
-  addMsg('s','— Section B: Transition unlocked —');
-}
-
 function updateMetrics(){
   var turns=Math.floor(messages.length/2);
   $id('mT').textContent=turns;
-  $id('mTb').style.width=Math.min(turns*6,100)+'%';
+  $id('mTb').style.width=Math.min(turns*8,100)+'%';
   if(depthScores.length){
     var avg=Math.round(depthScores.reduce(function(a,b){return a+b},0)/depthScores.length);
     $id('mD').textContent=avg;
@@ -449,31 +330,11 @@ function updateMetrics(){
 }
 
 function updateObjectives(flags){
-  var keys=['obj1','obj2','obj3','obj4','obj5','obj6','obj7'];
-  keys.forEach(function(k){
+  ['obj1','obj2','obj3','obj4'].forEach(function(k){
     if(flags[k]&&!objectives[k]){
       objectives[k]=true;
       $id(k+'-icon').classList.add('done');$id(k+'-icon').textContent='✓';
       $id(k+'-text').classList.add('done');
-    }
-  });
-}
-
-function updateMITTracker(mitUpdates){
-  if(!mitUpdates)return;
-  mitUpdates.forEach(function(m,i){
-    if(m.val&&!mitData[i].val){
-      mitData[i].val=m.val;
-      $id('mit'+(i+1)+'v').textContent=m.val;
-      $id('mit'+(i+1)).classList.add('captured');
-      $id('mit'+(i+1)+'s').className='mit-status cap';
-      $id('mit'+(i+1)+'s').textContent='Captured';
-    }
-    if(m.dug&&!mitData[i].dug){
-      mitData[i].dug=true;
-      $id('mit'+(i+1)).classList.add('dug');
-      $id('mit'+(i+1)+'s').className='mit-status dug';
-      $id('mit'+(i+1)+'s').textContent='Dug into ✓';
     }
   });
 }
@@ -503,27 +364,16 @@ function updateScriptCard(){
 
 function reset(){
   messages=[];whyScores=[];depthScores=[];violationCount=0;
-  objectives={obj1:false,obj2:false,obj3:false,obj4:false,obj5:false,obj6:false,obj7:false};
-  openingAnswered=false;phase='A';transitionTime=null;
-  mitData=[{val:'',dug:false},{val:'',dug:false},{val:'',dug:false}];
+  objectives={obj1:false,obj2:false,obj3:false,obj4:false};
+  openingAnswered=false;
   $id('chat').innerHTML='<div class="msg s">Session reset — press the mic when ready</div>';
   ['mT','mD','mW','mV'].forEach(function(id){$id(id).textContent=(id==='mT'||id==='mV')?'0':'--'});
   ['mTb','mDb','mWb','mVb'].forEach(function(id){$id(id).style.width='0'});
-  for(var i=1;i<=7;i++){
-    $id('obj'+i+'-icon').classList.remove('done');$id('obj'+i+'-icon').textContent='';
-    $id('obj'+i+'-text').classList.remove('done');
-  }
-  ['mit1','mit2','mit3'].forEach(function(id){
-    $id(id).className='mit-slot';
-    $id(id+'v').textContent='—';$id(id+'s').textContent='';$id(id+'s').className='mit-status';
+  ['obj1','obj2','obj3','obj4'].forEach(function(k){
+    $id(k+'-icon').classList.remove('done');$id(k+'-icon').textContent='';
+    $id(k+'-text').classList.remove('done');
   });
-  $id('mitTracker').style.display='none';
-  $id('phasePill').className='phase-pill phase-a';$id('phasePill').textContent='SECTION A';
-  $id('timerClock').textContent='0:00';$id('timerClock').className='timer-clock';
-  $id('timerFill').style.width='0';$id('timerFill').className='timer-fill';
-  $id('timerLabel').textContent='0–10 min target';
   speechSynthesis.cancel();isSpeaking=false;
-  if(timerInterval){clearInterval(timerInterval);timerInterval=null;}
   updateScriptCard();
 }
 
@@ -553,7 +403,7 @@ function speak(text){
     $id('p-'+id).classList.add('active');
     persona=PERSONAS[id];
     $id('topTitle').textContent=persona.name+' — '+persona.role;
-    $id('topSub').textContent='Archetype: '+persona.archetype+' · Mirror until emotion word → Two-step → Label → Challenge → Transition (3 min+)';
+    $id('topSub').textContent='Archetype: '+persona.archetype+' · Mirror until emotion word → What does that mean → Why does that matter → Label → Challenge';
     var badge=$id('archBadge');badge.className='abadge '+persona.archClass;badge.textContent=persona.archetype.toUpperCase();
     reset();$id('stat').textContent='Ready — read the script card, then click the mic';
   });
@@ -575,31 +425,23 @@ $id('micBtn').addEventListener('click',function(){
 });
 
 async function callClaude(text){
-  // Coherence check — reject very short or garbled input
-  var words=text.trim().split(/\s+/);
-  if(words.length<3||text.trim().length<8){
-    return{candidateReply:null,label:'UNCLEAR CAPTURE',body:'Speech was too short or unclear — try again.',color:'red',why:50,depth:0,youViol:false,objFlags:{},mitUpdates:null};
-  }
-
   var turn=Math.floor(messages.length/2)+1;
   var src=SOURCES[sourceKey];
   var srcScript=SOURCE_SCRIPT[sourceKey];
-  var elapsed=sessionStart?Math.floor((Date.now()-sessionStart)/1000):0;
   var history=messages.map(function(m){return(m.r?'RECRUITER':'CANDIDATE')+': '+m.t}).join('\n');
-  var mitState='MIT captured: '+mitData.map(function(m,i){return'MIT'+(i+1)+': '+(m.val||'none')+(m.dug?' (dug)':'')}).join(' | ');
-
-  var phaseNote=phase==='A'
-    ?'PHASE: Section A (OPEN). Score ONLY Section A techniques. Do NOT score or reference MIT scripting, comp discussion, or Section C+ content. If recruiter attempts transition before 3 minutes elapsed, flag as TOO EARLY.'
-    :'PHASE: Section B (TRANSITION). MIT scripting now active. Track which MITs are captured and whether recruiter digs into each one with the two-step (what does it mean + why does it matter).';
 
   var scriptCtx='';
   if(turn===1)scriptCtx='SCRIPTED TURN 1: Score whether recruiter asked for candidate by name. Lenient.\n\n';
-  else if(turn===2)scriptCtx='SCRIPTED TURN 2: Score whether recruiter said their name, said Momentum Solar, referenced source ('+srcScript+'), and asked if in market. Lenient on exact wording.\n\n';
-  else if(turn===3)scriptCtx='TURN 3: Did recruiter ask how search is going or similar open question? Candidate answers ONCE. Do not repeat.\n\n';
+  else if(turn===2)scriptCtx='SCRIPTED TURN 2: Score whether recruiter said their name, Momentum Solar, referenced source ('+srcScript+'), asked if in market. Lenient.\n\n';
+  else if(turn===3)scriptCtx='TURN 3: Did recruiter ask how search is going or similar? Candidate answers ONCE. Do not repeat.\n\n';
 
   var openNote=(turn>3&&!openingAnswered)?'NOTE: Candidate already answered how search is going in turn 3. Do not volunteer again unless directly asked.\n\n':'';
 
-  var prompt='You are '+persona.name+', a '+persona.role+' on a phone call with a Momentum Solar recruiter.\n\n'+persona.bio+'\n\nRecruiter found you because you '+src+'.\nThis is turn '+turn+'. Elapsed time: '+Math.floor(elapsed/60)+'m '+elapsed%60+'s.\n'+phaseNote+'\n'+mitState+'\n\n'+scriptCtx+openNote+'RESPOND ONLY AS THE CANDIDATE. 1-3 sentences MAX. Natural. Answer only what was asked — one layer, then stop.\n\n'+(history?'CONVERSATION:\n'+history+'\n\n':'')+'After candidate response on a NEW LINE output EXACTLY (all one line):\nCOACH_LABEL: [2-4 WORD CAPS] | COACH_BODY: [1-2 sentences coaching backward — what recruiter just did, no prescriptive advice] | COLOR: [green or red or blue] | WHY: [0-100] | DEPTH: [0-5] | YOUVIOL: [true/false] | COMPVIOL: [true if recruiter mentioned comp/income/earnings/money without candidate bringing it first] | OBJ1: [true if emotion word surfaced AND recruiter mirrored it] | OBJ2: [true if recruiter completed both what-does-it-mean AND why-does-it-matter steps] | OBJ3: [true if recruiter used label language: "it seems like" "it sounds like" "it feels like"] | OBJ4: [true if recruiter challenged candidate to validate with concrete example AND candidate gave real example] | OBJ5: [true if recruiter confirmed career vs job in transition] | OBJ6: [true if recruiter asked MIT question — score HIGH for verbatim: "What would you say are the three most important things in a company or within a position that would make it the right long-term career fit"] | OBJ7: [true if all 3 MITs captured AND each dug into with two-step] | MIT1: [captured MIT 1 value or empty] | MIT2: [captured MIT 2 value or empty] | MIT3: [captured MIT 3 value or empty] | MIT1DUG: [true if recruiter asked what MIT1 means AND why it matters] | MIT2DUG: [true if recruiter asked what MIT2 means AND why it matters] | MIT3DUG: [true if recruiter asked what MIT3 means AND why it matters] | TRANSITION: [true if recruiter made transition from Section A to Section B]\n\nSCORING RULES:\nWHY 85-100=mirrored exact emotion word OR asked what-does-it-mean OR why-does-it-matter OR used label language\nWHY 70-84=strong discovery question stayed in WHY\nWHY 50-69=decent question in discovery\nWHY 30-49=slight drift to logistics or role details\nWHY 10-29 RED=asked about hours/schedule/role/what candidate wants to DO (not accomplish)\nWHY 0-15 RED=said JOB not career / pitched earnings unprompted / said "you would be perfect"\nYOUVIOL=true if recruiter said "you would" "you seem" "you should" "you are great" addressing candidate directly — deduct 15 from WHY\nCOMPVIOL=true if recruiter mentioned money/income/earnings/comp before candidate brought it up — deduct 20 from WHY\nCONTEXT RULE: If candidate asked about company/role in previous turn, recruiter may use Defer to Company response — do NOT flag as drift. Score green as CLEAN DEFER.\nACCOMPLISH RULE: "What are you looking to accomplish" is correct methodology — never flag as WHAT drift.\nTRAP SETUP: If recruiter says "sounds like you\'ve given this thought" / "seems like you\'ve thought about this" or similar — score as TRAP SET (green), not generic praise. Only flag as TOO EARLY if used before turn 4.\nSPEECH TOLERANCE: If recruiter phrase closely matches a known methodology move, score it as that move — charitable interpretation always.\nIN-GROUP RULE: OBJ4 complement step requires third-person framing ("those who are selected" "candidates who do well here") — never "you are perfect" or "people like you" — that gives it away.\nTRANSITION TIMING: If recruiter attempts transition (career vs job question or MIT question) before 3 minutes elapsed, flag RED as TRANSITION TOO EARLY.\n\nLABELS GREEN: CLEAN SCRIPT|GREAT MIRROR|WHAT IT MEANS|WHY IT MATTERS|LABEL FIRED|TRAP SET|CHALLENGE LANDED|CLEAN DEFER|DISCOVERY WIN|DEPTH WIN|RAPPORT BUILD\nLABELS RED: WHAT DRIFT|WORD CHOICE: JOB|COMP TOO EARLY|YOU VIOLATION|GAVE IT AWAY|SURFACE PIVOT|TRANSITION TOO EARLY|GENERIC PRAISE\nLABELS BLUE: MIT CAPTURED|MIT DUG|TRANSITION CONFIRMED|ALL MITS COMPLETE\n\nRECRUITER JUST SAID: '+text;
+  var coachInstr=turn<=2
+    ?'COACH_LABEL: SCRIPT CHECK | COACH_BODY: [Score whether recruiter hit the intent. Lenient.] | RED: false | WHY: 50 | DEPTH: 0 | YOUVIOL: false | COMPVIOL: false | OBJ1: false | OBJ2: false | OBJ3: false | OBJ4: false'
+    :'COACH_LABEL: [2-4 WORD CAPS] | COACH_BODY: [1-2 sentences — describe what recruiter just did, coaching backward only, no prescriptive advice, no "you should"] | RED: [true/false] | WHY: [0-100] | DEPTH: [0-5 layers on one WHY thread before switching] | YOUVIOL: [true if recruiter said "you would" "you seem" "you should" "you are" addressing candidate directly] | COMPVIOL: [true if recruiter mentioned comp/income/earnings/money before candidate brought it up] | OBJ1: [true if emotion word surfaced AND recruiter mirrored it] | OBJ2: [true if recruiter completed BOTH what-does-it-mean AND why-does-it-matter] | OBJ3: [true if recruiter used label language: "it seems like" OR "it sounds like" OR "it feels like"] | OBJ4: [true if recruiter challenged candidate to validate with real example AND candidate gave one]\n\nSCORING RULES:\nWHY 85-100: mirrored exact emotion word OR asked what-does-it-mean OR why-does-it-matter OR used label language\nWHY 70-84: strong discovery question, stayed in WHY territory\nWHY 50-69: decent question in discovery\nWHY 30-49: slight drift toward role or logistics\nWHY 10-29 RED: recruiter asked about hours/schedule/experience/what candidate wants to DO (not accomplish)\nWHY 0-15 RED: said JOB not career / mentioned comp unprompted / said you would be perfect\nYOUVIOL deduct 15 from WHY. COMPVIOL deduct 20 from WHY.\nCONTEXT RULE: If candidate asked about company or role in previous turn, recruiter may use Defer to Company — do NOT flag as drift. Score as CLEAN DEFER green.\nACCOMPLISH RULE: "What are you looking to accomplish" is correct methodology. NEVER flag as WHAT drift.\nTRAP SETUP: "sounds like you have given this thought" or "seems like you have thought about this" or similar = TRAP SET green. Not generic praise. Never flag as GENERIC PRAISE.\nIN-GROUP RULE: Complement step requires third-person framing — "those who are selected" "candidates who do well here" — NEVER "you are perfect" or "people like you" — that gives the job away. Flag as GAVE IT AWAY red if direct.\nSPEECH TOLERANCE: If recruiter phrase closely matches a known methodology move, score it as that move. Charitable interpretation always.\nRAPPORT BUILD label: Do NOT fire this label. If recruiter acknowledged something without a technique, score it neutrally in the COACH_BODY — do not credit it as a technique.\nEMOTION WORD SURFACED: When candidate drops an emotion word and recruiter has not yet used the two-step — note in COACH_BODY that an emotion word is available for the two-step. Do not score it as a completed objective yet.\n\nLABELS GREEN: CLEAN SCRIPT|GREAT MIRROR|WHAT IT MEANS|WHY IT MATTERS|LABEL FIRED|TRAP SET|CHALLENGE LANDED|CLEAN DEFER|DISCOVERY WIN|DEPTH WIN|EMOTION SURFACED\nLABELS RED: WHAT DRIFT|WORD CHOICE: JOB|COMP TOO EARLY|YOU VIOLATION|GAVE IT AWAY|SURFACE PIVOT|GENERIC PRAISE';
+
+  var prompt='You are '+persona.name+', a '+persona.role+' on a phone call with a Momentum Solar recruiter.\n\n'+persona.bio+'\n\nRecruiter found you because you '+src+'.\nThis is turn '+turn+'.\n\n'+scriptCtx+openNote+'RESPOND ONLY AS THE CANDIDATE. 1-3 sentences MAX. Answer only what was asked — one layer then stop. Natural tone.\n\n'+(history?'CONVERSATION:\n'+history+'\n\n':'')+'After your candidate response on a NEW LINE output EXACTLY (all one line):\n'+coachInstr+'\n\nRECRUITER JUST SAID: '+text;
 
   var resp=await fetch(WORKER_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:prompt})});
   if(!resp.ok){var e=await resp.text();throw new Error(e||'API error '+resp.status)}
@@ -615,35 +457,25 @@ async function callClaude(text){
 
   var label=exf(coachLine,'COACH_LABEL');
   var body=exf(coachLine,'COACH_BODY').replace(/[\[\]]/g,'').trim();
-  var color=exf(coachLine,'COLOR').toLowerCase()||'green';
+  var isRed=exb(coachLine,'RED');
   var why=parseInt(exf(coachLine,'WHY'))||50;
   var depth=parseInt(exf(coachLine,'DEPTH'))||0;
   var youViol=exb(coachLine,'YOUVIOL');
   var compViol=exb(coachLine,'COMPVIOL');
-  var transition=exb(coachLine,'TRANSITION');
 
   if(youViol)violationCount++;
   if(compViol)violationCount++;
 
-  var mit1=exf(coachLine,'MIT1').replace(/[\[\]]/g,'').trim();
-  var mit2=exf(coachLine,'MIT2').replace(/[\[\]]/g,'').trim();
-  var mit3=exf(coachLine,'MIT3').replace(/[\[\]]/g,'').trim();
-  var mitUpdates=[
-    {val:mit1,dug:exb(coachLine,'MIT1DUG')},
-    {val:mit2,dug:exb(coachLine,'MIT2DUG')},
-    {val:mit3,dug:exb(coachLine,'MIT3DUG')}
-  ];
-
   var objFlags={
-    obj1:exb(coachLine,'OBJ1'),obj2:exb(coachLine,'OBJ2'),obj3:exb(coachLine,'OBJ3'),
-    obj4:exb(coachLine,'OBJ4'),obj5:exb(coachLine,'OBJ5'),obj6:exb(coachLine,'OBJ6'),
-    obj7:exb(coachLine,'OBJ7')
+    obj1:exb(coachLine,'OBJ1'),
+    obj2:exb(coachLine,'OBJ2'),
+    obj3:exb(coachLine,'OBJ3'),
+    obj4:exb(coachLine,'OBJ4')
   };
 
   if(turn===3)openingAnswered=true;
-  if(transition&&phase==='A')switchToPhaseB();
 
-  return{candidateReply:candidateReply||raw.split('\n')[0],label:label,body:body,color:color,why:why,depth:depth,youViol:youViol,objFlags:objFlags,mitUpdates:mitUpdates};
+  return{candidateReply:candidateReply||raw.split('\n')[0],label:label,body:body,isRed:isRed,why:why,depth:depth,objFlags:objFlags};
 }
 
 function startRecording(){
@@ -656,11 +488,16 @@ function startRecording(){
   recog.start();
 
   recog.onresult=async function(e){
-    var transcript=e.results[0][0].transcript;
+    var transcript=e.results[0][0].transcript.trim();
     isRecording=false;
 
-    // Start timer on first turn
-    if(messages.length===0&&!sessionStart)startTimer();
+    // Reject only if completely empty or single character nonsense
+    if(!transcript||transcript.length<2){
+      addTip('UNCLEAR CAPTURE','Speech was not captured — try again.',true);
+      $id('micBtn').className='mic idle';$id('micBtn').textContent='🎤';
+      $id('stat').textContent='Try again — speak clearly';
+      return;
+    }
 
     $id('micBtn').className='mic thinking';$id('micBtn').textContent='…';
     $id('stat').textContent=(persona?persona.name.split(' ')[0]:'Candidate')+' is thinking…';
@@ -668,28 +505,16 @@ function startRecording(){
 
     try{
       var res=await callClaude(transcript);
-
-      // If coherence check failed — don't advance, show tip only
-      if(!res.candidateReply){
-        addTip(res.label,res.body,'red');
-        // Remove the bad turn from messages
-        messages.pop();
-        $id('micBtn').className='mic idle';$id('micBtn').textContent='🎤';
-        $id('stat').textContent='Try again — speak clearly';
-        return;
-      }
-
       messages.push({r:false,t:res.candidateReply});
 
-      // Small delay before showing candidate response
-      await new Promise(function(resolve){setTimeout(resolve,400)});
+      // 1200ms delay before candidate responds — gives recruiter time to finish
+      await new Promise(function(resolve){setTimeout(resolve,1200)});
 
       addMsg('c',res.candidateReply);
-      if(res.label&&res.body)addTip(res.label,res.body,res.color);
+      if(res.label&&res.body)addTip(res.label,res.body,res.isRed);
       whyScores.push(res.why);
       if(res.depth>0)depthScores.push(res.depth);
       updateMetrics();updateScriptCard();updateObjectives(res.objFlags);
-      updateMITTracker(res.mitUpdates);
       $id('micBtn').className='mic idle';$id('micBtn').textContent='🎤';
       $id('stat').textContent='Your turn — click mic to respond';
       await speak(res.candidateReply);
