@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NeverSettle | Recruiter Training v2.4</title>
+<title>NeverSettle | Recruiter Training v2.5</title>
 <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;600;700;900&family=Barlow+Condensed:wght@700;900&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -98,7 +98,7 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--w
         <div class="logo-icon"><svg viewBox="0 0 16 16"><path d="M8 1L1 5v6l7 4 7-4V5L8 1zm0 2.2L13 6v4l-5 2.8L3 10V6l5-2.8z"/></svg></div>
         <h1>NeverSettle</h1>
       </div>
-      <div class="logo-v">v2.4 &middot; Recruiter Training</div>
+      <div class="logo-v">v2.5 &middot; Recruiter Training</div>
     </div>
     <div class="sec">Candidate archetypes</div>
     <button class="pbtn" id="p-skeptic">
@@ -172,10 +172,7 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--w
     <div class="controls">
       <button class="mic idle" id="micBtn">&#127908;</button>
       <div class="stat" id="stat">Select a candidate to begin</div>
-      <div class="vwrap">
-        <label>Voice</label>
-        <select id="voiceSel"><option>Loading...</option></select>
-      </div>
+
       <button class="rbtn" id="resetBtn">Reset session</button>
     </div>
     <div class="hint-bar">
@@ -290,7 +287,7 @@ var SOURCE_SCRIPT={
 
 var persona=null,sourceKey='apply';
 var messages=[],whyScores=[],depthScores=[],violationCount=0;
-var isRecording=false,isSpeaking=false,recog=null,voices=[];
+var isRecording=false,isSpeaking=false,recog=null;
 var objectives={obj1:false,obj2:false,obj3:false,obj4:false};
 var openingAnswered=false;
 
@@ -380,23 +377,40 @@ function reset(){
   updateScriptCard();
 }
 
-function loadVoices(){
-  voices=speechSynthesis.getVoices().filter(function(v){return v.lang.indexOf('en')===0});
-  if(!voices.length)return;
-  $id('voiceSel').innerHTML=voices.map(function(v,i){return'<option value="'+i+'">'+v.name+'</option>'}).join('');
-}
-speechSynthesis.onvoiceschanged=loadVoices;loadVoices();
+// ElevenLabs voice IDs per persona
+var VOICE_IDS = {
+  skeptic: 'pNInz6obpgDQGcFmaJgB', // Adam — deep, authoritative
+  changer: 'TxGEqnHWrfWFTfGW9XjX', // Josh — warm, conversational
+  hungry:  '21m00Tcm4TlvDq8ikWAM'  // Rachel — young, confident female
+};
 
 function speak(text){
-  return new Promise(function(resolve){
-    speechSynthesis.cancel();
-    var u=new SpeechSynthesisUtterance(text);
-    var i=parseInt($id('voiceSel').value)||0;
-    if(voices[i])u.voice=voices[i];
-    u.rate=0.95;isSpeaking=true;
-    u.onend=function(){isSpeaking=false;resolve()};
-    u.onerror=function(){isSpeaking=false;resolve()};
-    speechSynthesis.speak(u);
+  return new Promise(async function(resolve){
+    if(!persona){resolve();return;}
+    var voiceId = VOICE_IDS[Object.keys(PERSONAS).find(function(k){return PERSONAS[k]===persona;})] || VOICE_IDS.skeptic;
+    try {
+      var resp = await fetch(WORKER_URL+'/tts', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({text:text, voice_id:voiceId})
+      });
+      if(!resp.ok){resolve();return;}
+      var data = await resp.json();
+      if(!data.audio){resolve();return;}
+      // Decode base64 and play
+      var binary = atob(data.audio);
+      var bytes = new Uint8Array(binary.length);
+      for(var i=0;i<binary.length;i++) bytes[i]=binary.charCodeAt(i);
+      var blob = new Blob([bytes], {type:'audio/mpeg'});
+      var url = URL.createObjectURL(blob);
+      var audio = new Audio(url);
+      isSpeaking=true;
+      audio.onended=function(){isSpeaking=false;URL.revokeObjectURL(url);resolve()};
+      audio.onerror=function(){isSpeaking=false;resolve()};
+      audio.play().catch(function(){isSpeaking=false;resolve()});
+    } catch(e){
+      isSpeaking=false;resolve();
+    }
   });
 }
 
@@ -422,7 +436,7 @@ function speak(text){
 $id('resetBtn').addEventListener('click',reset);
 $id('micBtn').addEventListener('click',function(){
   if(!persona){$id('stat').textContent='Pick a candidate first!';return}
-  if(isSpeaking){speechSynthesis.cancel();isSpeaking=false}
+  if(isSpeaking){isSpeaking=false}
   if(isRecording){if(recog)recog.stop();return}
   startRecording();
 });
