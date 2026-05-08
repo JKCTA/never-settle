@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NeverSettle | Recruiter Training v3.0</title>
+<title>NeverSettle | Recruiter Training v3.1</title>
 <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;600;700;900&family=Barlow+Condensed:wght@700;900&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -130,7 +130,7 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--w
         <div class="logo-icon"><svg viewBox="0 0 16 16"><path d="M8 1L1 5v6l7 4 7-4V5L8 1zm0 2.2L13 6v4l-5 2.8L3 10V6l5-2.8z"/></svg></div>
         <h1>NeverSettle</h1>
       </div>
-      <div class="logo-v">v3.0 &middot; Recruiter Training</div>
+      <div class="logo-v">v3.1 &middot; Recruiter Training</div>
     </div>
     <div class="sec">Candidate archetypes</div>
     <button class="pbtn" id="p-skeptic">
@@ -486,11 +486,11 @@ function reset(){
   updateScriptCard();
 }
 
-// ElevenLabs voice IDs per persona
+// Edge TTS voice ShortNames per persona (replaces ElevenLabs voice IDs)
 var VOICE_IDS = {
-  skeptic: 'pNInz6obpgDQGcFmaJgB', // Adam — deep, authoritative
-  changer: 'TxGEqnHWrfWFTfGW9XjX', // Josh — warm, conversational
-  hungry:  '21m00Tcm4TlvDq8ikWAM'  // Rachel — young, confident female
+  skeptic: 'en-US-RogerNeural',  // Roger — deep, slow, gravitas (Marcus K., 44, GM)
+  changer: 'en-US-AriaNeural',   // Aria — warm, mature female (Maya R., 34, working mom)
+  hungry:  'en-US-JennyNeural'   // Jenny — young, friendly female (Daria W., 22, ex-athlete)
 };
 
 function endSession(){
