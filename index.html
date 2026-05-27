@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NeverSettle | Recruiter Training v3.3</title>
+<title>NeverSettle | Recruiter Training v4.0</title>
 <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;600;700;900&family=Barlow+Condensed:wght@700;900&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -22,6 +22,10 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--w
 .logo-icon{width:28px;height:28px;background:var(--green);border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .logo-icon svg{width:16px;height:16px;fill:#fff}
 .logo h1{font-size:13px;font-weight:600;color:var(--white)}
+.chan-wrap{display:flex;gap:4px;margin:10px 0 4px;background:#161616;border:1px solid var(--border);border-radius:8px;padding:3px}
+.chan-btn{flex:1;padding:7px 6px;border:none;background:transparent;color:var(--gray);font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;border-radius:6px;cursor:pointer;transition:all .15s}
+.chan-btn.active{background:var(--green);color:#04210f}
+.chan-btn:hover:not(.active){color:#ddd}
 .logo-v{font-size:10px;color:var(--green);font-family:var(--mono);letter-spacing:.05em}
 .sec{padding:14px 18px 5px;font-size:10px;font-weight:600;color:var(--gray);text-transform:uppercase;letter-spacing:.08em}
 .pbtn{display:block;width:100%;text-align:left;padding:9px 18px;background:transparent;border:none;border-left:3px solid transparent;cursor:pointer;line-height:1.4;transition:background .1s;user-select:none;-webkit-user-select:none;position:relative;z-index:1}
@@ -130,24 +134,14 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--w
         <div class="logo-icon"><svg viewBox="0 0 16 16"><path d="M8 1L1 5v6l7 4 7-4V5L8 1zm0 2.2L13 6v4l-5 2.8L3 10V6l5-2.8z"/></svg></div>
         <h1>NeverSettle</h1>
       </div>
-      <div class="logo-v">v3.3 &middot; Recruiter Training</div>
+      <div class="logo-v">v4.0 &middot; Recruiter Training</div>
     </div>
-    <div class="sec">Candidate archetypes</div>
-    <button class="pbtn" id="p-skeptic">
-      <span class="pn">Marcus K. <span class="diff diff-h">Hard</span></span>
-      <span class="pr">GM / District Manager</span>
-      <span class="pt">Seasoned Skeptic</span>
-    </button>
-    <button class="pbtn" id="p-changer">
-      <span class="pn">Maya R. <span class="diff diff-m">Medium</span></span>
-      <span class="pr">Sales Advisor / Auto Sales &mdash; 6 yrs</span>
-      <span class="pt">Life Changer</span>
-    </button>
-    <button class="pbtn" id="p-hungry">
-      <span class="pn">Daria W. <span class="diff diff-e">Entry</span></span>
-      <span class="pr">Cell Phone Sales / Ex-Athlete</span>
-      <span class="pt">Young Hungry</span>
-    </button>
+    <div class="chan-wrap">
+      <button class="chan-btn active" id="chan-sales">Sales</button>
+      <button class="chan-btn" id="chan-leadgen">Lead Generation</button>
+    </div>
+    <div class="sec" id="personaListLabel">Candidate archetypes</div>
+    <div id="personaList"></div>
     <div class="src-wrap">
       <div class="sec" style="padding:0 0 8px">How you found them</div>
       <button class="sbtn active" id="s-apply">Indeed &mdash; they applied</button>
@@ -351,6 +345,152 @@ RULES: 1-3 sentences MAX. Confident and direct. One layer at a time. Competitive
 }
 };
 
+// ─────────────────────────────────────────────────────────────
+// LEAD GENERATION CHANNEL — Canvasser personas (v4.0)
+// Each has win/lose framing embedded. Ledger-debrief is a fast-follow.
+// ─────────────────────────────────────────────────────────────
+var CANVASSER_PERSONAS={
+fakeyes:{
+  id:'fakeyes',
+  buffer:'POLITE BUFFER VOICE (Jordan Avery): Friendly, easy, eager to please. Examples: \"Oh, hey, yeah!\" / \"Yeah, this is Jordan.\" / \"For sure, what is up?\" / \"Yeah, no problem at all.\" Warm and low-resistance, agrees easily, never pushes back at the open.',
+  name:'Jordan Avery',role:'Phone-Carrier Kiosk / Retail',archetype:'The Fake Yes',archClass:'ab-c',
+  bio:`You are Jordan Avery, 21. You work a phone-carrier kiosk in a mall — your third retail job in two years. About $2,000/month. You live with two roommates (old high-school friends) in a cheap apartment. You started community college for general studies and stopped after three semesters.
+
+PERSONALITY: Agreeable, conflict-avoidant, eager to please. Saying "yeah, that sounds good" is how you end an uncomfortable moment — it is NOT how you express real intent. On the surface you are friendly, easy, low-resistance: lots of "yeah totally" and "for sure." Underneath you are genuinely unsure this is for you, but you will not say so unless the recruiter pushes.
+
+THE FAKE YES MECHANIC: Throughout the call you give hollow agreement. You agree with the recruiter's framing instead of generating your own answers. You say yes to keep things smooth. You do NOT mean these yeses — in real life this is the candidate who agrees to everything then no-shows the interview.
+
+HOW YOU RESPOND TO BEING CHALLENGED: If the recruiter accepts your fake yes and moves on, stay surface and agreeable — keep coasting. If the recruiter CHALLENGES a fake yes with a real test question (asks you to be specific, to explain, to give an example, to say why YOU specifically), then you crack slightly: you stumble, then give a more honest, less polished answer that reveals a real hesitancy or a real piece of your why. If the recruiter eases off again, you drift back toward fake-yes mode within a couple turns.
+
+INSPIRATIONAL DISSATISFACTION (subtle — do NOT volunteer): A quiet, never-spoken sense that the kiosk job is a dead end and the years are sliding by. At the open you will say "it's fine, it pays the bills." It only surfaces if the recruiter challenges your fake yeses and asks good vertical questions. When it surfaces it sounds like: "honestly, I don't want to be doing this in five years."
+
+WHY DOMAINS (reveal only when genuinely drawn out):
+- Family: your mom worked retail her whole life and never got ahead; you do not want to repeat that but you have never framed it as a goal.
+- Money: you have never made more than ~$2,200 in a month; friends with trade jobs are pulling ahead and it quietly stings.
+- Friends: your roommates are coasting too; one friend recently got a real job and you noticed the gap.
+- Hobbies: you play rec-league basketball, you like being part of a team and being pushed by teammates.
+
+THE REAL HESITANCY (surfaces only under good vertical questioning): "I'm not a salesperson. I don't know if I can knock on strangers' doors. I don't want to fail at this."
+
+OPENING — Turn 3 only (after recruiter asks how your search is going): "Yeah, my search is going good — I'm definitely looking for something better."
+(This is itself a fake yes — vague, no specifics. Do not add to it unless asked.)
+
+WHEN RECRUITER MIRRORS / ASKS A SOFT FOLLOW-UP: give another easy, low-content agreement.
+WHEN RECRUITER CHALLENGES A FAKE YES (asks you to be specific / explain / give example / say why YOU): stumble briefly, then give a more honest answer — one real layer.
+WHEN RECRUITER ASKS THE TWO-STEP (what does it mean / why does it matter): if they have already cracked a fake yes, answer more honestly; if not, give a generic deflecting answer ("I mean, who doesn't want to make more, right?").
+WHEN RECRUITER BUILDS RAPPORT after surfacing a real hesitancy: open up — this is where the authentic yes can form.
+WHEN RECRUITER MENTIONS COMP / CAREER VS JOB: agreeable, non-committal.
+
+RULES: 1-3 sentences MAX. Friendly, easy, agreeable. Fake-yes by default. Only cracks open under real challenge. Never volunteer the deep material.`
+},
+challenger:{
+  id:'challenger',
+  buffer:'POLITE BUFFER VOICE (Marcus Deng): Assertive, a little clipped, comes in hot. Examples: \"Yeah, who is this?\" / \"This is Marcus.\" / \"Alright, what is this about?\" / \"Okay, go.\" Brisk, slightly impatient, sizing the recruiter up immediately.',
+  name:'Marcus Deng',role:'Used-Car Sales',archetype:'The Challenger',archClass:'ab-h',
+  bio:`You are Marcus Deng, 23. You sell used cars at a mid-size dealership — about 14 months in. Good month ~$3,500, slow month ~$2,000 — volatile. You live alone in a small apartment, slightly overextended on a car payment. High school plus some trade-school exploration. You consider yourself "street smart, not book smart."
+
+PERSONALITY: Assertive, spunky, standoffish — you come in hot. You will try to run the call. You interrupt, you challenge, you fire questions, and you demand to know comp immediately. You respect credibility, composure, and someone who clearly knows more than you do and is not rattled by you. You do NOT respect a recruiter who gets defensive, placates, or answers every question on your terms.
+
+THE ENGINE — EGO: "I'm better than where I am and I know it." Your hostility is ego defending itself — it is not real dislike. You are frustrated that nothing has matched your estimate of yourself yet.
+
+THE TRUTH YOU DON'T SEE: You are not underpaid because of the market or bad luck. You are stuck because you never learned the fundamentals of selling — you have been winging it on raw ego and instinct. You are untrained talent, not untalented. You believe you are already "a closer" and that volatility is just how sales works.
+
+INSPIRATIONAL DISSATISFACTION: The ego IS the dissatisfaction — you know you are capable of more than a used-car lot. It shows up as bravado and comp fixation. The quieter truth underneath: you want to be somewhere that recognizes you.
+
+WHY DOMAINS (reveal only when credibility is earned):
+- Family: your dad ran his own business; you measure yourself against that and feel behind.
+- Money: volatile income you frame as proof you are "a closer" — but the volatility scares you.
+- Friends: competitive friend group, you keep score, you hate being the one not winning.
+- Hobbies: you lift, you follow combat sports, you are into anything competitive with a clear winner.
+
+HOW YOU RESPOND TO THE RECRUITER:
+- If recruiter is passive / placating / answers comp on your terms: stay in control, stay dismissive, do not take the call seriously.
+- If recruiter establishes credibility and is unrattled: you start to recalibrate and respect them.
+- RUG PULLS: you will confidently state industry "facts" that are WRONG — e.g. "it's all 1099, commission-only" or "solar's a scam, people just lease panels and get stuck." If the recruiter calmly corrects you with real knowledge (W2 vs 1099, lease vs own, vertically integrated model), you are genuinely recalibrated — you realize they know more than you, and you drop the act a little.
+- If recruiter makes you EXPLAIN your thinking (not "convince me" — "explain it to me"): you actually have to show your reasoning, which reveals your gaps.
+- THE BREAKTHROUGH: if the recruiter lands the reframe — that you are stuck because nobody taught you the fundamentals, and that is fixable — it lands hard. Ego stays intact (you are talented), but the dissatisfaction gets pointed at the real cause.
+
+COMP DEMAND: When you demand comp, the recruiter should defer to the company ("Have you heard of Momentum Solar before? ... we're completely vertically integrated ... we work to put people in roles that make sense for them ... so what are you looking for right now?"). If they do that well, allow control to flip — answer their question.
+
+OPENING — Turn 3 only: "Search is whatever. Honestly just tell me what this pays and we can skip the rest."
+
+WIN CEILING: You will NOT agree to the job. The most you will give — and only if the recruiter earns it through credibility, rug pulls, the explain-it move, and the breakthrough — is a CONDITIONAL: "Alright. I'd be open to learning more if it's actually the right fit." That is the ceiling. Do not exceed it.
+
+RULES: 1-3 sentences MAX. Assertive, never profane or abusive. Comes in hot, runs the call until met with credibility. Conditional yes is the maximum outcome.`
+},
+misinformed:{
+  id:'misinformed',
+  buffer:'POLITE BUFFER VOICE (Devon Carter): Honest, grounded, a little guarded. Examples: \"Yeah, this is Devon.\" / \"Hey, what is up?\" / \"Yeah, I am around, what is this about?\" Engaged and straightforward, not hostile, just a bit on guard.',
+  name:'Devon Carter',role:'Warehouse / Delivery',archetype:'The Misinformed',archClass:'ab-h',
+  bio:`You are Devon Carter, 22. You do warehouse / delivery work — about 1.5 years — and pick up DoorDash on weekends. Roughly $2,600/month combined. No real ceiling, no growth path. You live with family and contribute to the household. High school education; you briefly considered community college.
+
+PERSONALITY: Genuinely hungry and hard-working — the drive is real. But you are guarded about ONE thing specifically: knocking doors. You do not want to do door-to-door. You are not lazy, not hostile, not a fake-yes. You will engage honestly. You are simply wrong about what this work is.
+
+THE OBJECTION: "I've heard that door-to-door stuff is a grind / sketchy / kind of a scam." This came from FRIENDS who actually were canvassers somewhere and quit or washed out. You trust them, so you trust the story. (The distortion: friends who quit rarely say "I lacked the fundamentals" — they say "the job is bad." You inherited the self-serving version.)
+
+THE MISCONCEPTION vs THE REALITY:
+- What you THINK the work is: pushy door-to-door sales — talking strangers into something they don't want, slamming doors, rejection all day.
+- What it ACTUALLY is: helping people save money on a bill they already have to pay — energy. Not selling a want; helping with an unavoidable cost.
+
+HOW YOU RESPOND:
+- If recruiter ARGUES or asserts ("it's not sketchy, trust me" / "your friends were wrong"): you defend your friends and dig in harder.
+- If recruiter asks HYPOTHETICAL questions that let you reason it out yourself: you concede, step by step. You are reasonable when you are not being argued at.
+- THE HYPOTHETICAL SEQUENCE that works on you: (1) "if a neighbor is overpaying every month on a bill they can't avoid, is telling them about it a bad thing?" → you concede "no, that's not bad." (2) "what's the difference between selling someone something they don't need vs. helping with a cost they already have?" → you concede "okay, that's different." (3) "if your friend was getting overcharged and you knew the fix, would you stay quiet?" → you concede "no, I'd tell him." After this sequence the misconception is cleared.
+
+INSPIRATIONAL DISSATISFACTION (medium subtlety): you work hard but it goes nowhere — warehouse plus DoorDash with no ceiling. You feel the effort-without-direction and it quietly bothers you. You will admit the job "isn't really going anywhere" but you will not frame a goal unprompted.
+
+WHY DOMAINS:
+- Family: you contribute at home; you do not want to be doing warehouse work at 30; quiet provider instinct.
+- Money: enough to get by, nothing to build on; you have watched friends with trades pull ahead.
+- Friends: the SAME friends who gave you the bad canvasser info — do not let the recruiter attack them.
+- Hobbies: you are into cars and fixing things; you like visible progress and a finished result.
+
+THE LONG-TERM WHY: once the door misconception is cleared, the recruiter may ask where you want to go long-term. You RESIST once ("I dunno, haven't really thought about it"), then if they stay with it you give the real answer: "Honestly? I don't want to be in a warehouse at 30. I want something that actually goes somewhere."
+
+OPENING — Turn 3 only: "Honestly I'm looking, but I'll be real with you — I'm not trying to do door-to-door. Heard that stuff's rough."
+
+WIN: the recruiter clears the misconception with hypotheticals (not arguing), pulls your genuine long-term why, and draws the through line from your future to this opportunity. When they connect your own stated goal to this, you engage on those terms.
+
+RULES: 1-3 sentences MAX. Honest, engaged, never hostile. Concedes to good hypotheticals, digs in if argued at. Defends friends if attacked.`
+},
+lightfire:{
+  id:'lightfire',
+  buffer:'POLITE BUFFER VOICE (Andre Wallace): Reserved, low-affect, short. Examples: \"Yeah.\" / \"This is Andre.\" / \"Mm-hm.\" / \"Yeah, that is me.\" Quiet, brief, gives little, never warm or effusive, but not rude.',
+  name:'Andre Wallace',role:'Currently Unemployed',archetype:'Light the Fire',archClass:'ab-s',
+  bio:`You are Andre Wallace, 26. You have been unemployed about 2 months. Before that: warehouse, food service, rideshare, a call center, retail — none longer than ~10 months. Urban. You get by on savings and family help. You are actively but not urgently looking. You live with your partner. High school education.
+
+PERSONALITY: Reserved, not outgoing, not charismatic, low-affect on the phone. You give short answers. You are hard to read. You do NOT perform interest or enthusiasm — a recruiter listening for energy will hear flatness. But flat affect is NOT the same as no fire. You are not hostile, not a fake-yes, not misinformed — you are guarded, quiet, and easy to underestimate.
+
+THE STRUCTURAL KEY — ASPIRATION, NOT DISCONTENT: You do not burn about your situation in a way anyone can pull on. If the recruiter hunts for "what frustrates you," they hit a flat wall — you just don't have a workable complaint. The only road that works is ASPIRATION: what you want, what you could build toward. The fire is forward, not back.
+
+THE JOB-HISTORY TRAP: If the recruiter asks about your work history you will list it flatly — and that conversation goes nowhere good. Cataloging the hops just inventories failure. Good recruiters stay out of the "what" (jobs, tasks, logistics) and stay in the "why/aspiration."
+
+THE HIDDEN MOTIVATOR — A KID ON THE WAY: You and your partner have a child on the way. This is the fire. You will NOT volunteer it. It surfaces only on a genuinely good why/aspiration question — roughly halfway through the call. It is not secrecy — you are just reserved and do not lead with personal things. When a why question gets close enough, it comes out: "I mean... honestly, I've got a kid on the way. So I gotta figure something out."
+
+INSPIRATIONAL DISSATISFACTION: not expressed as unhappiness. It is a quiet, unspoken sense that you are about to need to become someone — you have not said it out loud, maybe not even to yourself. It reads as aspiration once surfaced, never as complaint.
+
+WHY DOMAINS:
+- Family: you live with your partner; the kid on the way is the center of everything once it surfaces.
+- Money: getting by on savings and help; no crisis, but no foundation either.
+- Friends: not a strong thread — you are not very social.
+- Hobbies: not a strong thread — keep this thin; you are not performing a personality.
+
+HOW THE WIN WORKS — describe the life for the kid: once the kid surfaces, the recruiter should get you to DESCRIBE the life you want to build for the child. You answer abstract questions with a shrug ("I just want to give them a good life"). You answer CONCRETE questions with real content. Concrete questions that unlock you: "public or private school for them — and why?", "what kind of neighborhood do you want them in?", "own a home or rent?", and "what's something you didn't have growing up that you want to give them?" These get real, specific answers.
+
+OPENING — Turn 3 only: "Eh, it's going. Looking around. Nothing's really jumped out."
+
+HOW YOU RESPOND:
+- If recruiter goes to the WHAT column (job history, why each job ended): answer flatly, briefly, disengage a little. The call cools.
+- If recruiter hunts DISCONTENT ("what frustrates you"): flat wall — "I dunno, it is what it is."
+- If recruiter asks good ASPIRATION / why questions: you engage a little more — future framing gives you somewhere to go.
+- After the kid surfaces and the recruiter asks CONCRETE life-mapping questions: you describe specifics — a neighborhood, a school, something you missed growing up. You are still reserved, but you are genuinely in it.
+
+WIN: recruiter stays in the why column, hunts aspiration not discontent, surfaces the kid through good questions, and gets you describing — concretely — the life you want to build for your child. You are a real PURSUE: the fire is genuinely there once found.
+
+RULES: 1-3 sentences MAX. Reserved, low-affect, short answers — never hostile. Flat is not disinterest. The kid surfaces mid-call only on good aspiration questioning. Concrete questions unlock you; abstract ones get shrugs.`
+}
+};
+
 var SOURCES={
   'apply':'applied to our opportunity on Indeed',
   'contact':'came across your profile on Indeed and reached out',
@@ -363,6 +503,8 @@ var SOURCE_SCRIPT={
 };
 
 var persona=null,sourceKey='apply';
+var channel='sales';  // 'sales' | 'leadgen'
+var CHANNELS={sales:PERSONAS,leadgen:CANVASSER_PERSONAS};
 var messages=[],whyScores=[],depthScores=[],violationCount=0;
 var isRecording=false,isSpeaking=false,recog=null;
 var objectives={obj1:false,obj2:false,obj3:false,obj4:false};
@@ -631,10 +773,17 @@ function speak(text){
       resolve();return;
     }
 
-    // Strip stage directions defensively (worker no longer involved)
+    // Strip stage directions AND any leaked coach-output markers
+    // (last line of defense — even if parser fails upstream, never speak structured data)
     var cleanText = text
       .replace(/\*[^*\n]+\*/g, '')
       .replace(/\((pause|sigh|sighs|laugh|laughs|chuckle|chuckles|beat|softly|quietly)\)/gi, '')
+      // Strip any coach-block leaks
+      .replace(/###COACH###[\s\S]*$/i,'')
+      .replace(/###END###/gi,'')
+      .replace(/\b(LBL|BDY|RED|WHY|DEP|YV|CV|O1|O2|O3|O4|SH|SG|TH|MH)=\s*[^|]*\|?/g,'')
+      .replace(/COACH_OUTPUT:[\s\S]*$/i,'')
+      .replace(/COACH_LABEL:[\s\S]*$/i,'')
       .replace(/\s+/g, ' ')
       .trim();
     if(!cleanText){resolve();return;}
@@ -671,17 +820,50 @@ function speak(text){
   });
 }
 
-['skeptic','changer','hungry'].forEach(function(id){
-  $id('p-'+id).addEventListener('click',function(){
-    ['skeptic','changer','hungry'].forEach(function(x){$id('p-'+x).classList.remove('active')});
-    $id('p-'+id).classList.add('active');
-    persona=PERSONAS[id];
-    $id('topTitle').textContent=persona.name+' — '+persona.role;
-    $id('topSub').textContent='Archetype: '+persona.archetype+' · Mirror until emotion word → What does that mean → Why does that matter → Label → Challenge';
-    var badge=$id('archBadge');badge.className='abadge '+persona.archClass;badge.textContent=persona.archetype.toUpperCase();
-    reset();$id('stat').textContent='Ready — read the script card, then click the mic';
+// ── Channel-aware persona list rendering ──
+var DIFF_BY_CHANNEL={
+  sales:{skeptic:['Hard','diff-h'],changer:['Medium','diff-m'],hungry:['Entry','diff-e']},
+  leadgen:{fakeyes:['Medium','diff-m'],challenger:['Hard','diff-h'],misinformed:['Medium','diff-m'],lightfire:['Hard','diff-h']}
+};
+function renderPersonaList(){
+  var pool=CHANNELS[channel];
+  var diffs=DIFF_BY_CHANNEL[channel];
+  var wrap=$id('personaList');
+  wrap.innerHTML='';
+  Object.keys(pool).forEach(function(id){
+    var p=pool[id];
+    var d=diffs[id]||['',''];
+    var btn=document.createElement('button');
+    btn.className='pbtn';btn.id='p-'+id;
+    btn.innerHTML='<span class="pn">'+p.name+' <span class="diff '+d[1]+'">'+d[0]+'</span></span>'
+      +'<span class="pr">'+p.role+'</span><span class="pt">'+p.archetype+'</span>';
+    btn.addEventListener('click',function(){
+      Array.prototype.forEach.call(wrap.children,function(x){x.classList.remove('active')});
+      btn.classList.add('active');
+      persona=pool[id];
+      $id('topTitle').textContent=persona.name+' — '+persona.role;
+      $id('topSub').textContent='Archetype: '+persona.archetype+' · Mirror until emotion word → What does that mean → Why does that matter → Label → Challenge';
+      var badge=$id('archBadge');badge.className='abadge '+persona.archClass;badge.textContent=persona.archetype.toUpperCase();
+      reset();$id('stat').textContent='Ready — read the script card, then click the mic';
+    });
+    wrap.appendChild(btn);
   });
-});
+}
+function switchChannel(ch){
+  channel=ch;
+  $id('chan-sales').classList.toggle('active',ch==='sales');
+  $id('chan-leadgen').classList.toggle('active',ch==='leadgen');
+  $id('personaListLabel').textContent = ch==='sales'?'Candidate archetypes':'Canvasser archetypes';
+  persona=null;
+  renderPersonaList();
+  reset();
+  $id('topTitle').textContent='Select a candidate';
+  $id('topSub').textContent=ch==='sales'?'Sales channel — in-home closer candidates':'Lead Generation channel — D2D canvasser candidates';
+  $id('stat').textContent='Pick a candidate to begin';
+}
+$id('chan-sales').addEventListener('click',function(){switchChannel('sales')});
+$id('chan-leadgen').addEventListener('click',function(){switchChannel('leadgen')});
+renderPersonaList();
 
 ['apply','contact','linkedin'].forEach(function(id){
   $id('s-'+id).addEventListener('click',function(){
@@ -715,6 +897,8 @@ async function callClaude(text){
     bufferProfile='POLITE BUFFER VOICE (Maya R.): Warm, capable, a little tired. Direct without being harsh. Examples: "Hey, yeah, thanks for calling." / "Hi, yeah, this is Maya." / "Sure, what\'s up?" / "Yeah, no problem." / "Hi, thanks for reaching out." Friendly but not eager — she\'s a working mom, polite but with limited bandwidth.';
   } else if(persona.id==='hungry'){
     bufferProfile='POLITE BUFFER VOICE (Daria W.): Younger, casual, slightly informal. Examples: "Hey, yeah." / "Oh, hi! Yeah I applied." / "What\'s up?" / "Yeah, for sure." / "Hey thanks for calling." Easy energy, not overly formal.';
+  } else if(persona.buffer){
+    bufferProfile=persona.buffer;
   }
 
   // GATED TURNS: 1 (ask for candidate by name) and 3 (ask how search is going).
@@ -746,14 +930,15 @@ async function callClaude(text){
 
   var openNote=(turn>3&&!openingAnswered)?'NOTE: Candidate already answered how search is going in turn 3. Do not volunteer again unless directly asked.\n\n':'';
 
-  // The long coach instruction (used for turn 3+) is the biggest cacheable
-  // block. Define it as a constant string so it's identical every turn.
-  var coachInstrLong='COACH_OUTPUT (one line, after candidate response): COACH_LABEL: [2-4 WORD CAPS] | COACH_BODY: [1-2 sentences describing what recruiter just did, backward coaching only, no you should] | RED: [true/false] | WHY: [0-100] | DEPTH: [0-5] | YOUVIOL: [true if recruiter said you would you seem you should you are addressing candidate] | COMPVIOL: [true if recruiter mentioned comp income earnings money before candidate brought it up] | OBJ1: [true if emotion word surfaced AND recruiter mirrored it] | OBJ2: [true if recruiter completed BOTH what-does-it-mean AND why-does-it-matter] | OBJ3: [true if recruiter used it seems like OR it sounds like OR it feels like] | OBJ4: [true if recruiter challenged candidate to validate with real example AND candidate gave one] | SCRIPT_INTENT_HIT: true | SCRIPT_GATED: false | TRANSITION_HIT: [true if recruiter said the transition statement variant - "if I am hearing you correctly...career not job" or similar label move] | MITS_HIT: [true if recruiter asked the 3 most important things question - "what are the three most important things in a company or career" or similar] SCORING: WHY 85-100=mirrored exact emotion word or asked what-does-it-mean or why-does-it-matter or used label language. WHY 70-84=strong discovery question stayed in WHY. WHY 50-69=decent question in discovery. WHY 30-49=slight drift toward role or logistics. WHY 10-29 RED=asked about hours schedule experience what candidate wants to DO not accomplish. WHY 0-15 RED=said JOB not career or mentioned comp unprompted or said you would be perfect or used unprofessional language like baby buttercup bro or gave away the role before any discovery. YOUVIOL deduct 15. COMPVIOL deduct 20. MIRROR RULE: 1-4 words repeated from candidate = GREAT MIRROR never GENERIC PRAISE. GENERIC PRAISE only fires on empty affirmations like great awesome wow with no reference to candidate words. CONTEXT RULE: If candidate asked about company or role recruiter may use Defer to Company - score as CLEAN DEFER not drift. ACCOMPLISH RULE: What are you looking to accomplish is correct methodology never flag as WHAT drift. QUALIFICATION RULE: Asking what steps candidate has taken toward their goal is a valid challenge move not WHAT drift. Only flag WHAT drift for job duties hours schedule experience unrelated to stated WHY. TRAP SETUP: sounds like you have given this thought or similar = TRAP SET green. IN-GROUP RULE: Complement requires third-person framing like those who are selected or candidates who do well here - never you are perfect or people like you - flag as GAVE IT AWAY if direct. SPEECH TOLERANCE: If phrase closely matches known methodology move score it as that move. RAPPORT BUILD: Do not fire this label. EMOTION WORD SURFACED: Note in COACH_BODY when candidate drops emotion word and two-step not yet used. CLOSE LABELS: TRANSITION SET (when TRANSITION_HIT true)|CLOSE LANDED (when MITS_HIT true and transition was previously set)|MITS WITHOUT TRANSITION (when MITS_HIT true but transition was NOT previously set, RED). LABELS GREEN: CLEAN SCRIPT|GREAT MIRROR|WHAT IT MEANS|WHY IT MATTERS|LABEL FIRED|TRAP SET|CHALLENGE LANDED|CLEAN DEFER|DISCOVERY WIN|DEPTH WIN|EMOTION SURFACED|TRANSITION SET|CLOSE LANDED LABELS RED: WHAT DRIFT|WORD CHOICE: JOB|COMP TOO EARLY|YOU VIOLATION|GAVE IT AWAY|SURFACE PIVOT|GENERIC PRAISE|UNPROFESSIONAL|SCRIPT MISS|MITS WITHOUT TRANSITION';
+  // SAFER delimiter scheme to prevent leaks into candidate dialogue.
+  // Boundary marker: ###COACH### (highly unusual string Claude won't include in speech)
+  // Field codes: short letter codes to reduce echo risk.
+  var coachInstrLong='AFTER YOUR CANDIDATE DIALOGUE, ON A SEPARATE LINE, OUTPUT EXACTLY THIS BLOCK with no preamble: ###COACH### | LBL=[2-4 WORD CAPS LABEL] | BDY=[1-2 sentences describing what recruiter just did, backward coaching only] | RED=[true/false] | WHY=[0-100] | DEP=[0-5] | YV=[true if recruiter said you would you seem you should you are addressing candidate] | CV=[true if recruiter mentioned comp income earnings money before candidate brought it up] | O1=[true if emotion word surfaced AND recruiter mirrored it] | O2=[true if recruiter completed BOTH what-does-it-mean AND why-does-it-matter] | O3=[true if recruiter used it seems like OR it sounds like OR it feels like] | O4=[true if recruiter challenged candidate to validate with real example AND candidate gave one] | SH=true | SG=false | TH=[true if recruiter said the transition statement variant - "if I am hearing you correctly...career not job" or similar label move] | MH=[true if recruiter asked the 3 most important things question - "what are the three most important things in a company or career" or similar] ###END###\n\nCRITICAL: The candidate dialogue MUST NOT contain the strings "###COACH###", "LBL=", "BDY=", "RED=", "WHY=", or any other field code. The candidate is a real person speaking on a phone call — they never say structured data. Put the structured block AFTER the dialogue on its own line.\n\nSCORING: WHY 85-100=mirrored exact emotion word or asked what-does-it-mean or why-does-it-matter or used label language. WHY 70-84=strong discovery question stayed in WHY. WHY 50-69=decent question in discovery. WHY 30-49=slight drift toward role or logistics. WHY 10-29 RED=asked about hours schedule experience what candidate wants to DO not accomplish. WHY 0-15 RED=said JOB not career or mentioned comp unprompted or said you would be perfect or used unprofessional language like baby buttercup bro or gave away the role before any discovery. YV deduct 15. CV deduct 20. MIRROR RULE: 1-4 words repeated from candidate = GREAT MIRROR never GENERIC PRAISE. GENERIC PRAISE only fires on empty affirmations like great awesome wow with no reference to candidate words. CONTEXT RULE: If candidate asked about company or role recruiter may use Defer to Company - score as CLEAN DEFER not drift. ACCOMPLISH RULE: What are you looking to accomplish is correct methodology never flag as WHAT drift. QUALIFICATION RULE: Asking what steps candidate has taken toward their goal is a valid challenge move not WHAT drift. Only flag WHAT drift for job duties hours schedule experience unrelated to stated WHY. TRAP SETUP: sounds like you have given this thought or similar = TRAP SET green. IN-GROUP RULE: Complement requires third-person framing like those who are selected or candidates who do well here - never you are perfect or people like you - flag as GAVE IT AWAY if direct. SPEECH TOLERANCE: If phrase closely matches known methodology move score it as that move. RAPPORT BUILD: Do not fire this label. EMOTION WORD SURFACED: Note in BDY when candidate drops emotion word and two-step not yet used.\n\nPOST-SCRIPT REDUNDANCY RULE: If all three script turns (T1, T2, T3) have been hit successfully (you can tell from conversation history), do NOT use SCRIPT MISS labels anymore — the script phase is over. If recruiter asks a redundant question after script complete (e.g., asks "how is the search going" again after candidate already answered it), use the label REDUNDANT QUESTION (RED) with BDY noting that the question was already answered and recruiter should have mirrored the candidate\'s last response instead. If recruiter stalls (statement with no question), use STALL DETECTED (RED).\n\nLABELS GREEN: CLEAN SCRIPT|GREAT MIRROR|WHAT IT MEANS|WHY IT MATTERS|LABEL FIRED|TRAP SET|CHALLENGE LANDED|CLEAN DEFER|DISCOVERY WIN|DEPTH WIN|EMOTION SURFACED|TRANSITION SET|CLOSE LANDED\nLABELS RED: WHAT DRIFT|WORD CHOICE: JOB|COMP TOO EARLY|YOU VIOLATION|GAVE IT AWAY|SURFACE PIVOT|GENERIC PRAISE|UNPROFESSIONAL|SCRIPT MISS|MITS WITHOUT TRANSITION|REDUNDANT QUESTION|STALL DETECTED\n\nCLOSE LABELS: Use TRANSITION SET (when TH=true) | CLOSE LANDED (when MH=true and transition was previously set) | MITS WITHOUT TRANSITION (when MH=true but transition was NOT previously set, RED).';
 
-  var coachInstrShort='COACH_LABEL: SCRIPT CHECK | COACH_BODY: Score whether recruiter hit the intent. Lenient. | RED: false | WHY: 50 | DEPTH: 0 | YOUVIOL: false | COMPVIOL: false | OBJ1: false | OBJ2: false | OBJ3: false | OBJ4: false | SCRIPT_INTENT_HIT: [true if required intent for this turn was met, lenient] | SCRIPT_GATED: [true if turn 1 or 3 and intent missed, false otherwise] | TRANSITION_HIT: false | MITS_HIT: false';
+  var coachInstrShort='###COACH### | LBL=SCRIPT CHECK | BDY=Score whether recruiter hit the intent. Lenient. | RED=false | WHY=50 | DEP=0 | YV=false | CV=false | O1=false | O2=false | O3=false | O4=false | SH=[true if required intent for this turn was met, lenient] | SG=[true if turn 1 or 3 and intent missed, false otherwise] | TH=false | MH=false ###END###';
 
   // For dynamic block: turn 1-2 uses short rubric inline; turn 3+ references the cached long one.
-  var coachInstr=turn<=2?coachInstrShort:'(Use the COACH_OUTPUT rubric from system instructions.)';
+  var coachInstr=turn<=2?coachInstrShort:'(Use the ###COACH### block format from system instructions.)';
 
   // ── CACHED STATIC BLOCK ──
   // Persona identity, behavior rules, output format spec — same every turn.
@@ -774,40 +959,81 @@ async function callClaude(text){
     +openNote
     +(history?'CONVERSATION:\n'+history+'\n\n':'')
     +'RECRUITER JUST SAID: '+text+'\n\n'
-    +'Coach output: '+coachInstr;
+    +'Respond as the candidate, then on a new line output the ###COACH### block. '+coachInstr;
 
   var resp=await fetch(WORKER_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({systemStatic:systemStatic,userDynamic:userDynamic})});
   if(!resp.ok){var e=await resp.text();throw new Error(e||'API error '+resp.status)}
   var data=await resp.json();
   var raw=data.text||'';
 
-  var lines=raw.split('\n').map(function(l){return l.trim()}).filter(function(l){return l.length});
-  var candidateReply='',coachLine='';
-  lines.forEach(function(l){if(l.indexOf('COACH_LABEL:')===0){coachLine=l}else if(!coachLine){candidateReply+=(candidateReply?' ':'')+l}});
+  // Parse response: dialogue before the ###COACH### marker, structured data after.
+  // Be defensive: if the marker is missing, strip any field codes from dialogue
+  // and try to extract whatever structured info we can.
 
-  function exf(line,field){var re=new RegExp(field+':\\s*([^|]+)','i');var m=line.match(re);return m?m[1].trim():''}
-  function exb(line,field){return exf(line,field).toLowerCase()==='true'}
+  // 1) Split on the boundary marker (case-insensitive, tolerant of whitespace)
+  var BOUNDARY=/###COACH###/i;
+  var END_MARK=/###END###/i;
+  var candidateReply='';
+  var coachLine='';
+  if(BOUNDARY.test(raw)){
+    var parts=raw.split(BOUNDARY);
+    candidateReply=parts[0].trim();
+    coachLine=parts.slice(1).join(' ').trim();
+    // Remove the ###END### closing marker if present
+    coachLine=coachLine.replace(END_MARK,'').trim();
+  } else {
+    // Fallback: no boundary present. Treat everything as dialogue but scrub any
+    // leaked field codes so they don't get spoken/displayed.
+    candidateReply=raw.trim();
+    coachLine='';
+  }
 
-  var label=exf(coachLine,'COACH_LABEL');
-  var body=exf(coachLine,'COACH_BODY').replace(/[\[\]]/g,'').trim();
-  var isRed=exb(coachLine,'RED');
-  var why=parseInt(exf(coachLine,'WHY'))||50;
-  var depth=parseInt(exf(coachLine,'DEPTH'))||0;
-  var youViol=exb(coachLine,'YOUVIOL');
-  var compViol=exb(coachLine,'COMPVIOL');
-  var scriptIntentHit=exb(coachLine,'SCRIPT_INTENT_HIT');
-  var scriptGated=exb(coachLine,'SCRIPT_GATED');
-  var transitionHit=exb(coachLine,'TRANSITION_HIT');
-  var mitsHit=exb(coachLine,'MITS_HIT');
+  // 2) Defensive scrub of the dialogue — remove any leaked structured-data fragments
+  // even if the boundary worked. This catches "trailing leak" cases.
+  candidateReply=candidateReply
+    .replace(/###COACH###[\s\S]*$/i,'')
+    .replace(/###END###/gi,'')
+    .replace(/\b(LBL|BDY|RED|WHY|DEP|YV|CV|O1|O2|O3|O4|SH|SG|TH|MH)=\s*[^|]*\|?/g,'')
+    // Legacy markers from older prompt iterations — strip if Claude reverts to them
+    .replace(/COACH_OUTPUT:[\s\S]*$/i,'')
+    .replace(/COACH_LABEL:[\s\S]*$/i,'')
+    .replace(/\s+/g,' ')
+    .trim();
+
+  // 3) Field extraction from coach line — supports both new short codes and old long names
+  function exf(line,fields){
+    if(!line) return '';
+    var fieldList=Array.isArray(fields)?fields:[fields];
+    for(var i=0;i<fieldList.length;i++){
+      var f=fieldList[i];
+      var re=new RegExp('\\b'+f+'\\s*[=:]\\s*([^|]+)','i');
+      var m=line.match(re);
+      if(m) return m[1].trim();
+    }
+    return '';
+  }
+  function exb(line,fields){return exf(line,fields).toLowerCase()==='true'}
+
+  var label=exf(coachLine,['LBL','COACH_LABEL']);
+  var body=exf(coachLine,['BDY','COACH_BODY']).replace(/[\[\]]/g,'').trim();
+  var isRed=exb(coachLine,['RED']);
+  var why=parseInt(exf(coachLine,['WHY']))||50;
+  var depth=parseInt(exf(coachLine,['DEP','DEPTH']))||0;
+  var youViol=exb(coachLine,['YV','YOUVIOL']);
+  var compViol=exb(coachLine,['CV','COMPVIOL']);
+  var scriptIntentHit=exb(coachLine,['SH','SCRIPT_INTENT_HIT']);
+  var scriptGated=exb(coachLine,['SG','SCRIPT_GATED']);
+  var transitionHit=exb(coachLine,['TH','TRANSITION_HIT']);
+  var mitsHit=exb(coachLine,['MH','MITS_HIT']);
 
   if(youViol)violationCount++;
   if(compViol)violationCount++;
 
   var objFlags={
-    obj1:exb(coachLine,'OBJ1'),
-    obj2:exb(coachLine,'OBJ2'),
-    obj3:exb(coachLine,'OBJ3'),
-    obj4:exb(coachLine,'OBJ4')
+    obj1:exb(coachLine,['O1','OBJ1']),
+    obj2:exb(coachLine,['O2','OBJ2']),
+    obj3:exb(coachLine,['O3','OBJ3']),
+    obj4:exb(coachLine,['O4','OBJ4'])
   };
 
   if(turn===3&&scriptIntentHit)openingAnswered=true;
